@@ -243,9 +243,8 @@
                     <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-3">
                         <div class="flex justify-between items-center text-xs text-slate-400">
                             <span>댓글 작성자: <strong id="commentAuthorDisplay" class="text-amber-400">로그인 필요</strong></span>
-                            <label class="inline-flex items-center gap-1.5 cursor-pointer text-slate-300 hover:text-white">
-                                <input type="checkbox" id="commentAnonymousCheck" checked class="rounded bg-slate-950 border-slate-800 text-cyan-500 focus:ring-0 w-3.5 h-3.5">
-                                <span>익명으로 작성</span>
+                            <label class="flex items-center gap-1.5 cursor-pointer text-slate-300 select-none">
+                                <input type="checkbox" id="commentAnonymousCheck" checked class="rounded bg-slate-950 border-slate-800 text-cyan-500 focus:ring-0"> 익명으로 작성
                             </label>
                         </div>
                         <textarea id="commentTextInput" rows="3" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-cyan-500" placeholder="댓글을 남겨보세요..."></textarea>
@@ -265,8 +264,8 @@
                     <button onclick="hideCommunityWritePage()" class="text-slate-400 hover:text-white text-xs"><i class="fa-solid fa-xmark text-lg"></i></button>
                 </div>
                 <div class="space-y-4 text-xs">
-                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
-                        <div class="w-full sm:w-1/2">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
                             <label class="block text-slate-400 mb-1.5 font-medium">카테고리 선택</label>
                             <select id="postCategoryInput" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:border-cyan-500 focus:outline-none">
                                 <option value="자유">자유 수다</option>
@@ -275,10 +274,10 @@
                                 <option value="질문">질문 & 답변</option>
                             </select>
                         </div>
-                        <div class="pt-2 sm:pt-6">
-                            <label class="inline-flex items-center gap-2 cursor-pointer bg-slate-900 border border-slate-800 px-4 py-2.5 rounded-xl text-slate-300 hover:text-white transition w-full sm:w-auto">
-                                <input type="checkbox" id="postAnonymousCheck" checked class="rounded bg-slate-950 border-slate-800 text-cyan-500 focus:ring-0 w-4 h-4">
-                                <span class="font-bold">익명으로 작성 (체크 시 닉네임 감춤)</span>
+                        <div class="flex items-end pb-2.5">
+                            <label class="flex items-center gap-2 cursor-pointer text-slate-300 select-none">
+                                <input type="checkbox" id="postAnonymousCheck" checked class="w-4 h-4 rounded bg-slate-950 border-slate-800 text-cyan-500 focus:ring-0">
+                                <span class="font-medium">커뮤니티 글 작성자 익명으로 표시</span>
                             </label>
                         </div>
                     </div>
@@ -528,6 +527,7 @@
         const INST_DB = "40722bed9bd38091bc79c69be4101cdd";
         const COMM_DB = "40722bed9bd3806080c3fab88464aa2b";
         const COMMENT_DB = "40722bed9bd38051902ce691cb8301af";
+        const USER_DB = "40722bed9bd3808eabe1fb58cf35a61a"; // 회원 DB ID
 
         let rawCommunityList = [];
         let currentActivePost = null;
@@ -535,6 +535,8 @@
         let currentCategoryFilter = '전체';
         let isEditingInstructor = false;
         let isEditingPost = false;
+        
+        let currentUserProfile = null; // { email, nickname, role, level, pageId }
 
         const guideDataMap = {
             vals: {
@@ -595,8 +597,8 @@
             }
         };
 
-        window.onload = function() {
-            checkLoginState();
+        window.onload = async function() {
+            await checkLoginState();
             loadPools();
             loadInstructors();
             loadCommunity();
@@ -613,93 +615,108 @@
             } catch (e) { return null; }
         }
 
-        function handleGoogleLogin(response) {
+        async function handleGoogleLogin(response) {
             const profile = parseJwt(response.credential);
             if (!profile) return;
 
             localStorage.setItem('diving_google_email', profile.email);
-            if (!localStorage.getItem('diving_hub_nickname')) {
-                localStorage.setItem('diving_hub_nickname', profile.name);
-                localStorage.setItem('diving_hub_role', '일반다이버');
-                localStorage.setItem('diving_hub_level', 'Level 1');
-            }
-            checkLoginState();
+            await checkLoginState();
             closeProfileModal();
-            renderCommunity(); // 최신 닉네임 연동을 위해 재렌더링
-            alert(`환영합니다, ${profile.name}님!`);
         }
 
         function logoutGoogle() {
             localStorage.removeItem('diving_google_email');
-            localStorage.removeItem('diving_hub_nickname');
-            localStorage.removeItem('diving_hub_role');
-            localStorage.removeItem('diving_hub_level');
+            currentUserProfile = null;
             checkLoginState();
             closeProfileModal();
-            renderCommunity();
             alert("로그아웃되었습니다.");
+            location.reload();
         }
 
-        function checkLoginState() {
+        async function checkLoginState() {
             const email = localStorage.getItem('diving_google_email');
-            const nick = localStorage.getItem('diving_hub_nickname');
-            const role = localStorage.getItem('diving_hub_role') || '일반다이버';
-            const level = localStorage.getItem('diving_hub_level') || 'Level 1';
-
-            if (email && nick) {
-                const badgeText = role === '인증강사' ? '[강사]' : `[${level}]`;
-                document.getElementById('headerMyName').innerText = `${nick} ${badgeText}`;
-                document.getElementById('commentAuthorDisplay').innerText = `${nick} ${badgeText}`;
-                
-                document.getElementById('googleLoginSection').classList.add('hidden');
-                document.getElementById('profileEditSection').classList.remove('hidden');
-                document.getElementById('userEmailDisplay').innerText = email;
-                document.getElementById('myNicknameInput').value = nick;
-                document.getElementById('myRoleInput').value = role;
-                document.getElementById('myLevelInput').value = level;
-            } else {
+            if (!email) {
+                currentUserProfile = null;
                 document.getElementById('headerMyName').innerText = "로그인 필요";
                 document.getElementById('commentAuthorDisplay').innerText = "로그인 필요";
                 document.getElementById('googleLoginSection').classList.remove('hidden');
                 document.getElementById('profileEditSection').classList.add('hidden');
+                return;
+            }
+
+            // 노션 회원 DB에서 해당 이메일 검색
+            try {
+                const res = await queryNotion(USER_DB, { property: "이름", title: { equals: email } });
+                if (res.results && res.results.length > 0) {
+                    const r = res.results[0];
+                    currentUserProfile = {
+                        pageId: r.id,
+                        email: email,
+                        nickname: getText(r.properties["닉네임"]),
+                        role: getText(r.properties["회원유형"]) || '일반다이버',
+                        level: getText(r.properties["레벨"]) || 'Level 1'
+                    };
+
+                    const badgeText = currentUserProfile.role === '인증강사' ? '[강사]' : `[${currentUserProfile.level}]`;
+                    document.getElementById('headerMyName').innerText = `${currentUserProfile.nickname} ${badgeText}`;
+                    document.getElementById('commentAuthorDisplay').innerText = `${currentUserProfile.nickname} ${badgeText}`;
+                    
+                    document.getElementById('googleLoginSection').classList.add('hidden');
+                    document.getElementById('profileEditSection').classList.remove('hidden');
+                    document.getElementById('userEmailDisplay').innerText = email;
+                    document.getElementById('myNicknameInput').value = currentUserProfile.nickname;
+                    document.getElementById('myRoleInput').value = currentUserProfile.role;
+                    document.getElementById('myLevelInput').value = currentUserProfile.level;
+                } else {
+                    // 회원이 아니면 자동 프로필 생성 유도
+                    currentUserProfile = { email: email, pageId: null };
+                    document.getElementById('headerMyName').innerText = "프로필 설정 필요";
+                    document.getElementById('commentAuthorDisplay').innerText = "프로필 설정 필요";
+                    document.getElementById('googleLoginSection').classList.add('hidden');
+                    document.getElementById('profileEditSection').classList.remove('hidden');
+                    document.getElementById('userEmailDisplay').innerText = email;
+                    document.getElementById('myNicknameInput').value = '';
+                    document.getElementById('myRoleInput').value = '일반다이버';
+                    document.getElementById('myLevelInput').value = 'Level 1';
+                    openProfileModal();
+                }
+            } catch (e) {
+                console.error(e);
             }
         }
 
         function openProfileModal() { document.getElementById('profileModal').classList.remove('hidden'); }
         function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
 
-        function saveMyProfile() {
+        async function saveMyProfile() {
             const nick = document.getElementById('myNicknameInput').value.trim();
+            const role = document.getElementById('myRoleInput').value;
+            const level = document.getElementById('myLevelInput').value;
+            const email = localStorage.getItem('diving_google_email');
+            
             if (!nick) { alert("닉네임을 입력하세요!"); return; }
-            localStorage.setItem('diving_hub_nickname', nick);
-            localStorage.setItem('diving_hub_role', document.getElementById('myRoleInput').value);
-            localStorage.setItem('diving_hub_level', document.getElementById('myLevelInput').value);
-            closeProfileModal();
-            checkLoginState();
-            renderCommunity(); // 프로필 변경 시 작성했던 과거 글 작성자 뱃지 실시간 동적 갱신
-            alert("프로필 정보가 업데이트되었습니다!");
-        }
 
-        function getMyProfileInfo() {
-            return {
-                email: localStorage.getItem('diving_google_email') || '',
-                nickname: localStorage.getItem('diving_hub_nickname') || '',
-                role: localStorage.getItem('diving_hub_role') || '일반다이버',
-                level: localStorage.getItem('diving_hub_level') || 'Level 1'
+            const properties = {
+                "이름": { title: [{ text: { content: email } }] },
+                "닉네임": { rich_text: [{ text: { content: nick } }] },
+                "회원유형": { select: { name: role } },
+                "레벨": { select: { name: level } }
             };
-        }
 
-        // 실시간 최신 프로필 기반 작성자 명칭 동적 생성 함수
-        function getDynamicAuthorDisplayName(rawAuthorText, authorEmail) {
-            if (rawAuthorText === '익명' || rawAuthorText.startsWith('익명')) {
-                return '익명';
+            try {
+                if (currentUserProfile && currentUserProfile.pageId) {
+                    await updateNotionPage(currentUserProfile.pageId, properties);
+                } else {
+                    await createNotionPage(USER_DB, properties);
+                }
+                closeProfileModal();
+                await checkLoginState();
+                loadCommunity();
+                loadInstructors();
+                alert("프로필이 노션 회원 DB에 영구 저장되었습니다!");
+            } catch (e) {
+                alert("프로필 저장 실패");
             }
-            const myInfo = getMyProfileInfo();
-            if (myInfo.email && authorEmail && myInfo.email === authorEmail) {
-                const badge = myInfo.role === '인증강사' ? '[강사]' : `[${myInfo.level}]`;
-                return `${myInfo.nickname} ${badge}`;
-            }
-            return rawAuthorText;
         }
 
         function formatDate(ds) {
@@ -816,8 +833,6 @@
         async function loadInstructors() {
             try {
                 const data = await queryNotion(INST_DB);
-                const myInfo = getMyProfileInfo();
-
                 const list = (data.results || []).map(r => ({
                     id: r.id,
                     name: getText(r.properties["이름"]),
@@ -834,7 +849,7 @@
                 const g = document.getElementById('instructorsGrid');
                 g.innerHTML = list.length ? '' : '<p class="text-slate-400 col-span-3 text-center py-8">등록된 강사가 없습니다.</p>';
                 list.forEach(i => {
-                    const isMyPost = myInfo.email && i.authorEmail && myInfo.email === i.authorEmail;
+                    const isMyPost = currentUserProfile && currentUserProfile.email && i.authorEmail && currentUserProfile.email === i.authorEmail;
                     g.innerHTML += `
                         <div onclick='showInstructorDetailPage(${JSON.stringify(i)})' class="glass-card p-5 rounded-2xl space-y-3 cursor-pointer hover:border-cyan-500 transition shadow-lg flex flex-col justify-between">
                             <div class="flex justify-between items-center">
@@ -867,9 +882,8 @@
             const chatBtn = document.getElementById('instChatBtn');
             chatBtn.href = i.chat.startsWith('http') ? i.chat : 'https://' + i.chat;
 
-            const myInfo = getMyProfileInfo();
             const ownerBtns = document.getElementById('instructorOwnerButtons');
-            if (myInfo.email && i.authorEmail && myInfo.email === i.authorEmail) {
+            if (currentUserProfile && currentUserProfile.email && i.authorEmail && currentUserProfile.email === i.authorEmail) {
                 ownerBtns.classList.remove('hidden');
             } else {
                 ownerBtns.classList.add('hidden');
@@ -884,8 +898,7 @@
         }
 
         function showInstructorWritePage() {
-            const myInfo = getMyProfileInfo();
-            if (!myInfo.email) { alert("구글 로그인이 필요합니다!"); openProfileModal(); return; }
+            if (!currentUserProfile || !currentUserProfile.email) { alert("구글 로그인이 필요합니다!"); openProfileModal(); return; }
             
             isEditingInstructor = false;
             document.getElementById('instructorWriteTitle').innerHTML = `<i class="fa-solid fa-chalkboard-user text-cyan-400"></i> 강사 프로필 등록`;
@@ -930,8 +943,7 @@
         }
 
         async function submitInstructor() {
-            const myInfo = getMyProfileInfo();
-            if (!myInfo.email) { openProfileModal(); return; }
+            if (!currentUserProfile || !currentUserProfile.email) { openProfileModal(); return; }
 
             const name = document.getElementById('instNameInput').value.trim();
             const cert = document.getElementById('instCertInput').value.trim();
@@ -945,7 +957,7 @@
                 "소개및가격": { rich_text: [{ text: { content: document.getElementById('instIntroInput').value.trim() } }] },
                 "연락처": { rich_text: [{ text: { content: document.getElementById('instContactInput').value.trim() } }] },
                 "오픈채팅링크": { url: document.getElementById('instChatInput').value.trim() || null },
-                "작성자이메일": { rich_text: [{ text: { content: myInfo.email } }] }
+                "작성자이메일": { rich_text: [{ text: { content: currentUserProfile.email } }] }
             };
 
             try {
@@ -988,7 +1000,7 @@
                     title: getText(r.properties["제목"]),
                     category: getText(r.properties["카테고리"]),
                     content: getText(r.properties["내용"]),
-                    author: getText(r.properties["작성자"]),
+                    authorRaw: getText(r.properties["작성자"]), // 저장된 원본 또는 익명
                     authorEmail: getText(r.properties["작성자이메일"]),
                     createdAt: r.created_time,
                     commentCount: commentCounts[r.id] || 0
@@ -1014,7 +1026,6 @@
         }
 
         function renderCommunity() {
-            const myInfo = getMyProfileInfo();
             let filteredList = [...rawCommunityList];
             if (currentCategoryFilter !== '전체') {
                 filteredList = filteredList.filter(c => c.category === currentCategoryFilter);
@@ -1025,15 +1036,20 @@
             l.innerHTML = filteredList.length ? '' : '<p class="text-slate-400 text-center py-8">등록된 게시글이 없습니다.</p>';
             
             filteredList.forEach(c => {
-                const isMyPost = myInfo.email && c.authorEmail && myInfo.email === c.authorEmail;
-                const dynamicAuthor = getDynamicAuthorDisplayName(c.author, c.authorEmail);
+                const isMyPost = currentUserProfile && currentUserProfile.email && c.authorEmail && currentUserProfile.email === c.authorEmail;
                 
+                // 동적 뱃지 연동 (실명 글일 경우 현재 내 최신 프로필 닉네임/레벨 반영, 익명이면 '익명' 유지)
+                let displayAuthor = c.authorRaw;
+                if (isMyPost && !c.authorRaw.startsWith('익명')) {
+                    displayAuthor = currentUserProfile.role === '인증강사' ? `${currentUserProfile.nickname} [강사]` : `${currentUserProfile.nickname} [${currentUserProfile.level}]`;
+                }
+
                 l.innerHTML += `
-                    <div onclick='showCommunityDetailPage(${JSON.stringify(c)})' class="glass-card p-4 sm:p-5 rounded-2xl space-y-2 cursor-pointer hover:border-cyan-500 transition">
+                    <div onclick='showCommunityDetailPage(${JSON.stringify({...c, displayAuthor})})' class="glass-card p-4 sm:p-5 rounded-2xl space-y-2 cursor-pointer hover:border-cyan-500 transition">
                         <div class="flex justify-between items-center text-xs">
                             <div class="flex items-center gap-2">
                                 <span class="bg-teal-500/20 text-teal-300 border border-teal-500/30 px-2 py-0.5 rounded-md font-bold">${c.category}</span>
-                                <span class="text-slate-300 font-medium">${dynamicAuthor}</span>
+                                <span class="text-slate-300 font-medium">${displayAuthor}</span>
                             </div>
                             <div class="flex items-center gap-2">
                                 ${isMyPost ? '<span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold text-[10px] px-2 py-0.5 rounded-md">내 글</span>' : ''}
@@ -1052,18 +1068,15 @@
             document.getElementById('communityMainView').classList.add('hidden');
             document.getElementById('communityWritePage').classList.add('hidden');
             
-            const dynamicAuthor = getDynamicAuthorDisplayName(c.author, c.authorEmail);
-            
             document.getElementById('detailCategory').innerText = c.category;
-            document.getElementById('detailAuthor').innerText = dynamicAuthor;
+            document.getElementById('detailAuthor').innerText = c.displayAuthor;
             document.getElementById('detailDate').innerText = formatDate(c.createdAt);
             document.getElementById('detailTitle').innerText = c.title;
             document.getElementById('detailBody').innerText = c.content;
             document.getElementById('detailCommentCount').innerText = c.commentCount;
 
-            const myInfo = getMyProfileInfo();
             const ownerBtns = document.getElementById('communityOwnerButtons');
-            if (myInfo.email && c.authorEmail && myInfo.email === c.authorEmail) {
+            if (currentUserProfile && currentUserProfile.email && c.authorEmail && currentUserProfile.email === c.authorEmail) {
                 ownerBtns.classList.remove('hidden');
             } else {
                 ownerBtns.classList.add('hidden');
@@ -1079,8 +1092,7 @@
         }
 
         function showCommunityWritePage() {
-            const myInfo = getMyProfileInfo();
-            if (!myInfo.email) { alert("구글 로그인이 필요합니다!"); openProfileModal(); return; }
+            if (!currentUserProfile || !currentUserProfile.email) { alert("구글 로그인이 필요합니다!"); openProfileModal(); return; }
 
             isEditingPost = false;
             document.getElementById('communityWriteTitle').innerHTML = `<i class="fa-solid fa-pen text-cyan-400"></i> 새 게시글 작성`;
@@ -1104,7 +1116,6 @@
             document.getElementById('postCategoryInput').value = currentActivePost.category;
             document.getElementById('postTitleInput').value = currentActivePost.title;
             document.getElementById('postContentInput').value = currentActivePost.content;
-            document.getElementById('postAnonymousCheck').checked = (currentActivePost.author === '익명');
 
             document.getElementById('communityDetailPage').classList.add('hidden');
             document.getElementById('communityWritePage').classList.remove('hidden');
@@ -1120,8 +1131,7 @@
         }
 
         async function submitPost() {
-            const myInfo = getMyProfileInfo();
-            if (!myInfo.email) { openProfileModal(); return; }
+            if (!currentUserProfile || !currentUserProfile.email) { openProfileModal(); return; }
 
             const title = document.getElementById('postTitleInput').value.trim();
             const category = document.getElementById('postCategoryInput').value;
@@ -1130,17 +1140,14 @@
 
             if (!title || !content) { alert("제목과 내용을 모두 입력하세요!"); return; }
 
-            let authorText = "익명";
-            if (!isAnonymous) {
-                authorText = myInfo.role === '인증강사' ? `${myInfo.nickname} [강사]` : `${myInfo.nickname} [${myInfo.level}]`;
-            }
+            let authorBadge = isAnonymous ? "익명" : (currentUserProfile.role === '인증강사' ? `${currentUserProfile.nickname} [강사]` : `${currentUserProfile.nickname} [${currentUserProfile.level}]`);
 
             const properties = {
                 "제목": { title: [{ text: { content: title } }] },
                 "카테고리": { select: { name: category } },
-                "작성자": { rich_text: [{ text: { content: authorText } }] },
+                "작성자": { rich_text: [{ text: { content: authorBadge } }] },
                 "내용": { rich_text: [{ text: { content: content } }] },
-                "작성자이메일": { rich_text: [{ text: { content: myInfo.email } }] }
+                "작성자이메일": { rich_text: [{ text: { content: currentUserProfile.email } }] }
             };
 
             try {
@@ -1209,7 +1216,7 @@
             try {
                 const data = await queryNotion(COMMENT_DB, { property: "이름", title: { equals: postId } });
                 const comments = (data.results || []).map(r => ({
-                    author: getText(r.properties["작성자"]),
+                    authorRaw: getText(r.properties["작성자"]),
                     authorEmail: getText(r.properties["작성자이메일"]),
                     text: getText(r.properties["내용"]),
                     createdAt: r.created_time
@@ -1217,11 +1224,16 @@
                 
                 listEl.innerHTML = comments.length ? '' : '<p class="text-slate-500 text-xs py-2">등록된 댓글이 없습니다.</p>';
                 comments.forEach(cm => {
-                    const dynamicAuthor = getDynamicAuthorDisplayName(cm.author, cm.authorEmail);
+                    const isMyComment = currentUserProfile && currentUserProfile.email && cm.authorEmail && currentUserProfile.email === cm.authorEmail;
+                    let displayCommentAuthor = cm.authorRaw;
+                    if (isMyComment && !cm.authorRaw.startsWith('익명')) {
+                        displayCommentAuthor = currentUserProfile.role === '인증강사' ? `${currentUserProfile.nickname} [강사]` : `${currentUserProfile.nickname} [${currentUserProfile.level}]`;
+                    }
+
                     listEl.innerHTML += `
                         <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800 space-y-1">
                             <div class="flex justify-between text-xs">
-                                <span class="font-bold text-amber-400">${dynamicAuthor}</span>
+                                <span class="font-bold text-amber-400">${displayCommentAuthor}</span>
                                 <span class="text-slate-500 text-[11px]">${formatDate(cm.createdAt)}</span>
                             </div>
                             <p class="text-slate-200 text-xs leading-relaxed">${cm.text}</p>
@@ -1232,27 +1244,24 @@
         }
 
         async function submitComment() {
-            const myInfo = getMyProfileInfo();
-            if (!myInfo.email) { openProfileModal(); return; }
+            if (!currentUserProfile || !currentUserProfile.email) { openProfileModal(); return; }
 
             const text = document.getElementById('commentTextInput').value.trim();
             const isAnonymous = document.getElementById('commentAnonymousCheck').checked;
             if (!text) { alert("댓글 내용을 입력하세요!"); return; }
 
-            let authorText = "익명";
-            if (!isAnonymous) {
-                authorText = myInfo.role === '인증강사' ? `${myInfo.nickname} [강사]` : `${myInfo.nickname} [${myInfo.level}]`;
-            }
+            let authorBadge = isAnonymous ? "익명" : (currentUserProfile.role === '인증강사' ? `${currentUserProfile.nickname} [강사]` : `${currentUserProfile.nickname} [${currentUserProfile.level}]`);
 
             try {
                 const res = await createNotionPage(COMMENT_DB, {
                     "이름": { title: [{ text: { content: currentActivePost.id } }] },
-                    "작성자": { rich_text: [{ text: { content: authorText } }] },
+                    "작성자": { rich_text: [{ text: { content: authorBadge } }] },
                     "내용": { rich_text: [{ text: { content: text } }] },
-                    "작성자이메일": { rich_text: [{ text: { content: myInfo.email } }] }
+                    "작성자이메일": { rich_text: [{ text: { content: currentUserProfile.email } }] }
                 });
                 if (res.object === "page") {
                     document.getElementById('commentTextInput').value = '';
+                    document.getElementById('commentAnonymousCheck').checked = true; // 디폴트 복원
                     loadComments(currentActivePost.id);
                     loadCommunity();
                 }
