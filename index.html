@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIVING HUB - 대한민국 프리다이빙 & 스쿠버다이빙 올인원 플랫폼</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- 상단 네비게이션 헤더 -->
+    <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('pools')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                    <i class="fa-solid fa-water text-white text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-black tracking-wider text-white">DIVING HUB</h1>
+                    <p class="text-[10px] text-emerald-400 font-medium tracking-widest uppercase">Notion Live Sync</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <nav class="hidden lg:flex items-center space-x-1 text-sm font-medium">
+                    <button onclick="switchTab('pools')" id="nav-pools" class="px-3 py-2 rounded-lg text-emerald-400 bg-emerald-500/10 transition">전국 잠수풀</button>
+                    <button onclick="switchTab('instructors')" id="nav-instructors" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">강사 디렉토리</button>
+                    <button onclick="switchTab('community')" id="nav-community" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">커뮤니티</button>
+                    <button onclick="switchTab('guide')" id="nav-guide" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">다이빙 가이드</button>
+                    <button onclick="switchTab('license')" id="nav-license" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">자격증 체계</button>
+                </nav>
+                
+                <button onclick="openProfileModal()" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-user-gear"></i> <span id="headerMyName">내 프로필</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full space-y-6">
+
+        <!-- 1. 전국 잠수풀 탭 -->
+        <section id="tab-pools" class="space-y-6">
+            <div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-800">
+                <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-water text-emerald-400"></i> 전국 프리다이빙 & 스쿠버 잠수풀
+                </h2>
+                <p class="text-xs text-slate-400 mt-1">전국의 수중 잠수풀 정보와 예약 링크를 확인하세요. 카드를 클릭하면 상세 정보를 볼 수 있습니다.</p>
+            </div>
+            <div id="poolsLoading" class="text-center py-16 space-y-3">
+                <i class="fa-solid fa-spinner fa-spin text-emerald-400 text-3xl"></i>
+                <p class="text-xs text-slate-400">잠수풀 정보를 불러오는 중입니다...</p>
+            </div>
+            <div id="poolsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
+        </section>
+
+        <!-- 2. 강사 디렉토리 탭 -->
+        <section id="tab-instructors" class="hidden space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-800/50 p-6 rounded-2xl border border-slate-800">
+                <div>
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-chalkboard-user text-cyan-400"></i> 전문 강사 디렉토리
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">인증된 프리다이빙 및 스쿠버다이빙 강사진을 확인하고 오픈채팅으로 문의하세요.</p>
+                </div>
+                <button onclick="openInstructorPostModal()" class="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-slate-950 font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 text-sm shadow-lg shadow-emerald-500/20">
+                    <i class="fa-solid fa-user-plus"></i> 강사 등록하기
+                </button>
+            </div>
+            <div id="instructorsLoading" class="text-center py-16 space-y-3">
+                <i class="fa-solid fa-spinner fa-spin text-cyan-400 text-3xl"></i>
+                <p class="text-xs text-slate-400">강사 목록을 불러오는 중입니다...</p>
+            </div>
+            <div id="instructorsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
+        </section>
+
+        <!-- 3. 커뮤니티 탭 -->
+        <section id="tab-community" class="hidden space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-800/50 p-6 rounded-2xl border border-slate-800">
+                <div>
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-comments text-amber-400"></i> 다이버 익명 커뮤니티
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">버디 모집, 장터, 자유로운 다이빙 이야기를 남겨보세요.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <select id="sortOption" onchange="renderCommunity()" class="bg-slate-900 text-xs border border-slate-700 text-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:border-amber-500">
+                        <option value="latest">최신순</option>
+                        <option value="comments">댓글 많은 순</option>
+                    </select>
+                    <button onclick="openPostModal()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-4 py-2 rounded-xl transition flex items-center gap-2 text-sm shadow-lg shadow-emerald-500/20">
+                        <i class="fa-solid fa-pen"></i> 글쓰기
+                    </button>
+                </div>
+            </div>
+            <div id="communityLoading" class="text-center py-16 space-y-3">
+                <i class="fa-solid fa-spinner fa-spin text-amber-400 text-3xl"></i>
+                <p class="text-xs text-slate-400">게시글을 불러오는 중입니다...</p>
+            </div>
+            <div id="communityList" class="space-y-4 hidden"></div>
+        </section>
+
+        <!-- 4. 다이빙 가이드 탭 (아코디언 방식) -->
+        <section id="tab-guide" class="hidden space-y-6">
+            <div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-800">
+                <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-compass text-cyan-400"></i> 입문 다이버 가이드 & 안전 수칙
+                </h2>
+                <p class="text-xs text-slate-400 mt-1">항목을 클릭하시면 아래로 상세 내용이 펼쳐집니다.</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- 아코디언 1 -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-lg">
+                    <button onclick="toggleAccordion('guide-1')" class="w-full p-5 text-left flex justify-between items-center hover:bg-slate-750 transition">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm">F</span>
+                            <span class="font-bold text-white text-base">프리다이빙 입문 가이드 및 핵심 테크닉</span>
+                        </div>
+                        <i id="icon-guide-1" class="fa-solid fa-chevron-down text-slate-400 transition-transform"></i>
+                    </button>
+                    <div id="content-guide-1" class="hidden px-6 pb-6 pt-2 text-xs text-slate-300 space-y-3 border-t border-slate-700/60 leading-relaxed">
+                        <p class="text-emerald-400 font-bold text-sm">단 한 번의 호흡으로 물과 하나가 되는 프리다이빙</p>
+                        <p>프리다이빙은 공기통 등 장비 도움 없이 오직 사람의 호흡만으로 수중 깊은 곳까지 다녀오는 스포츠입니다.</p>
+                        <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700 space-y-2">
+                            <p>• <strong>프렌젤(Frenzel) 이퀄라이징:</strong> 혀 뒷부분을 입천장 쪽으로 밀어붙여 공기를 이관으로 보내 이압을 줄이는 필수 이퀄라이징 기법입니다.</p>
+                            <p>• <strong>덕다이빙(Duck Dive):</strong> 수면에서 상체를 직각으로 구부리고 다리를 위로 들어 올리는 무중력 입수 자세입니다.</p>
+                            <p>• <strong>유영 자세(Finning):</strong> 무릎을 가급적 구부리지 않고 골반 전체를 이용하여 롱핀을 부드럽게 저어줍니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 아코디언 2 -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-lg">
+                    <button onclick="toggleAccordion('guide-2')" class="w-full p-5 text-left flex justify-between items-center hover:bg-slate-750 transition">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-sm">S</span>
+                            <span class="font-bold text-white text-base">스쿠버다이빙 입문 가이드 및 중성부력</span>
+                        </div>
+                        <i id="icon-guide-2" class="fa-solid fa-chevron-down text-slate-400 transition-transform"></i>
+                    </button>
+                    <div id="content-guide-2" class="hidden px-6 pb-6 pt-2 text-xs text-slate-300 space-y-3 border-t border-slate-700/60 leading-relaxed">
+                        <p class="text-cyan-400 font-bold text-sm">수중에서 숨을 쉬며 무중력을 즐기는 스쿠버다이빙</p>
+                        <p>공기통과 호흡기, 부력조절기(BCD)를 메고 바닷속 세상을 오랜 시간 탐험할 수 있는 레포츠입니다.</p>
+                        <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700 space-y-2">
+                            <p>• <strong>중성 부력(Neutral Buoyancy):</strong> BCD와 자신의 폐 호흡량 조절을 통해 떠오르지도, 가라앉지도 않는 무중력 상태를 만듭니다.</p>
+                            <p>• <strong>마스크 물빼기:</strong> 수중에서 마스크 내부에 들어온 바닷물을 마스크 상단을 누르고 코로 숨을 내쉬어 제거합니다.</p>
+                            <p>• <strong>호흡법:</strong> 절대로 숨을 참지 않고 깊고 천천히 연속해서 호흡합니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 아코디언 3 -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-lg">
+                    <button onclick="toggleAccordion('guide-3')" class="w-full p-5 text-left flex justify-between items-center hover:bg-slate-750 transition">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold text-sm"><i class="fa-solid fa-shield-halved"></i></span>
+                            <span class="font-bold text-white text-base">필수 수중 안전 수칙 (절대 준수)</span>
+                        </div>
+                        <i id="icon-guide-3" class="fa-solid fa-chevron-down text-slate-400 transition-transform"></i>
+                    </button>
+                    <div id="content-guide-3" class="hidden px-6 pb-6 pt-2 text-xs text-slate-300 space-y-3 border-t border-slate-700/60 leading-relaxed">
+                        <div class="bg-rose-500/10 border border-rose-500/30 p-3 rounded-xl space-y-1">
+                            <h4 class="font-bold text-rose-400 text-xs"><i class="fa-solid fa-triangle-exclamation"></i> 1. 절대 혼자 다이빙하지 마세요 (Never Dive Alone)</h4>
+                            <p>버디 시스템은 선택이 아닌 필수입니다. 수중과 수면에서 상시 시야를 유지해야 합니다.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700 space-y-1">
+                            <h4 class="font-bold text-amber-400 text-xs">2. LMC 및 블랙아웃 구조 절차</h4>
+                            <p>• 출수 즉시 마스크와 노즈클립을 제거하고 3회 이상 "입으로 숨쉬어!" 회복 호흡을 유도합니다.</p>
+                            <p>• 반응이 없을 경우 기도 확보 후 수면 인공호흡 및 구조 요청을 실시합니다.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700 space-y-1">
+                            <h4 class="font-bold text-cyan-400 text-xs">3. 감압병 예방 수칙</h4>
+                            <p>스쿠버다이빙 후 잔류 질소 배출을 위해 최소 18~24시간 동안은 비행기 탑승 및 높은 산 등 고지대 이동을 자제하세요.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. 자격증 체계 탭 (아코디언 방식) -->
+        <section id="tab-license" class="hidden space-y-6">
+            <div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-800">
+                <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-award text-amber-400"></i> 국제 인증 자격증 체계 (License)
+                </h2>
+                <p class="text-xs text-slate-400 mt-1">단체별 자격 단계를 클릭하시면 요구 수심과 상세 기준이 펼쳐집니다.</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- 아코디언 4 -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-lg">
+                    <button onclick="toggleAccordion('license-1')" class="w-full p-5 text-left flex justify-between items-center hover:bg-slate-750 transition">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded-lg text-xs font-bold">Freediving</span>
+                            <span class="font-bold text-white text-base">프리다이빙 단계별 자격증 과정 (Level 1 ~ 3)</span>
+                        </div>
+                        <i id="icon-license-1" class="fa-solid fa-chevron-down text-slate-400 transition-transform"></i>
+                    </button>
+                    <div id="content-license-1" class="hidden px-6 pb-6 pt-2 text-xs text-slate-300 space-y-3 border-t border-slate-700/60 leading-relaxed">
+                        <div class="border border-slate-700 bg-slate-900/60 p-3 rounded-xl space-y-1">
+                            <h4 class="font-bold text-emerald-400">Level 1 (Basic / Light Diver)</h4>
+                            <p>• <strong>목표 수심:</strong> 5m ~ 10m</p>
+                            <p>• <strong>요구 조건:</strong> 숨참기(STA) 1분 30초, 잠영(DYN) 30m</p>
+                            <p>• <strong>교육 내용:</strong> 기초 호흡법, 발사르바 이퀄라이징, 기본 수중 유영 및 안전 교육</p>
+                        </div>
+                        <div class="border border-slate-700 bg-slate-900/60 p-3 rounded-xl space-y-1">
+                            <h4 class="font-bold text-cyan-400">Level 2 (Advanced Freediver)</h4>
+                            <p>• <strong>목표 수심:</strong> 16m ~ 20m</p>
+                            <p>• <strong>요구 조건:</strong> 숨참기(STA) 2분 30초, 잠영(DYN) 50m</p>
+                            <p>• <strong>교육 내용:</strong> 프렌젤 이퀄라이징 완성, 수중 자기 구조 및 버디 구조법(Rescue)</p>
+                        </div>
+                        <div class="border border-slate-700 bg-slate-900/60 p-3 rounded-xl space-y-1">
+                            <h4 class="font-bold text-amber-400">Level 3 (Master Freediver)</h4>
+                            <p>• <strong>목표 수심:</strong> 24m ~ 30m</p>
+                            <p>• <strong>요구 조건:</strong> 숨참기(STA) 3분 30초, 잠영(DYN) 70m</p>
+                            <p>• <strong>교육 내용:</strong> 고급 이퀄라이징 마우스필 교육 및 보조 강사 수련 과정</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 아코디언 5 -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-lg">
+                    <button onclick="toggleAccordion('license-2')" class="w-full p-5 text-left flex justify-between items-center hover:bg-slate-750 transition">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-cyan-500/20 text-cyan-400 px-2.5 py-1 rounded-lg text-xs font-bold">Scuba Diving</span>
+                            <span class="font-bold text-white text-base">스쿠버다이빙 단계별 자격증 과정 (Open Water ~ Rescue)</span>
+                        </div>
+                        <i id="icon-license-2" class="fa-solid fa-chevron-down text-slate-400 transition-transform"></i>
+                    </button>
+                    <div id="content-license-2" class="hidden px-6 pb-6 pt-2 text-xs text-slate-300 space-y-3 border-t border-slate-700/60 leading-relaxed">
+                        <div class="border border-slate-700 bg-slate-900/60 p-3 rounded-xl space-y-1">
+                            <h4 class="font-bold text-cyan-400">오픈워터 (Open Water Diver)</h4>
+                            <p>• <strong>최대 허용 수심:</strong> 18m</p>
+                            <p>• <strong>교육 내용:</strong> 기본 다이빙 이론, 장비 세팅, 중성 부력 연습, 마스크 물빼기 및 비상 상승</p>
+                        </div>
+                        <div class="border border-slate-700 bg-slate-900/60 p-3 rounded-xl space-y-1">
+                            <h4 class="font-bold text-amber-400">어드밴스드 (Advanced Open Water)</h4>
+                            <p>• <strong>최대 허용 수심:</strong> 30m</p>
+                            <p>• <strong>교육 내용:</strong> 딥 다이빙, 수중 나침반 탐비, 야간 다이빙 등 5가지 스페셜티 경험 과정</p>
+                        </div>
+                        <div class="border border-slate-700 bg-slate-900/60 p-3 rounded-xl space-y-1">
+                            <h4 class="font-bold text-rose-400">레스큐 & 다이브마스터 (Rescue / Divemaster)</h4>
+                            <p>• <strong>자격 기준:</strong> 전문가/가이드 단계</p>
+                            <p>• <strong>교육 내용:</strong> 수중 비상상황 예방 및 관리, 지친 다이버 구조, 다이빙 투어 리드 및 가이드</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 잠수풀 / 강사 상세 정보 모달 -->
+    <div id="detailModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 w-full max-w-lg rounded-2xl p-6 space-y-4 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeDetailModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="modalTitle" class="text-xl font-bold text-white">상세 정보</h3>
+            <div id="modalContent" class="space-y-3 text-sm text-slate-300"></div>
+
+            <!-- 댓글 섹션 -->
+            <div id="commentsSection" class="hidden border-t border-slate-700 pt-4 space-y-3">
+                <h4 class="text-sm font-bold text-amber-400 flex items-center gap-1.5">
+                    <i class="fa-solid fa-comments"></i> 댓글 목록
+                </h4>
+
+                <div id="commentsList" class="space-y-2 text-xs text-slate-300"></div>
+                
+                <div class="space-y-2 pt-2">
+                    <div class="flex justify-between items-center text-xs text-slate-400 px-1">
+                        <span>작성자: <strong id="commentAuthorDisplay" class="text-emerald-400"></strong></span>
+                        <span onclick="openProfileModal()" class="text-cyan-400 cursor-pointer underline">변경</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="commentTextInput" class="flex-grow bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500" placeholder="댓글을 입력하세요...">
+                        <button id="btnSubmitComment" onclick="submitComment()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs transition">등록</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 커뮤니티 글쓰기 모달 -->
+    <div id="postModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 w-full max-w-lg rounded-2xl p-6 space-y-4 shadow-2xl relative">
+            <button onclick="closePostModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-xl font-bold text-white"><i class="fa-solid fa-pen text-emerald-400"></i> 커뮤니티 글 작성</h3>
+            <div class="space-y-3 text-sm">
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">제목</label>
+                    <input type="text" id="postTitleInput" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-500" placeholder="제목을 입력하세요">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">카테고리</label>
+                    <select id="postCategoryInput" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+                        <option value="자유">자유</option>
+                        <option value="버디모집">버디모집</option>
+                        <option value="장터">장터</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">작성자</label>
+                    <div class="flex items-center justify-between bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white">
+                        <span id="postAuthorDisplay" class="text-emerald-400 font-semibold text-xs"></span>
+                        <button onclick="openProfileModal()" class="text-xs text-cyan-400 underline">프로필 변경</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">내용</label>
+                    <textarea id="postContentInput" rows="4" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-500" placeholder="내용을 입력하세요"></textarea>
+                </div>
+                <button id="btnSubmitPost" onclick="submitPost()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-2.5 rounded-xl transition shadow-lg shadow-emerald-500/20">노션에 글 등록하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 강사 등록 모달 -->
+    <div id="instructorPostModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 w-full max-w-lg rounded-2xl p-6 space-y-4 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeInstructorPostModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-xl font-bold text-white"><i class="fa-solid fa-chalkboard-user text-cyan-400"></i> 강사 디렉토리 등록</h3>
+            <div class="space-y-3 text-sm">
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">이름</label>
+                    <input type="text" id="instNameInput" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-500" placeholder="강사 성함">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">소속 단체</label>
+                    <input type="text" id="instCertInput" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-500" placeholder="예: PADI / SSI 등">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">활동 지역</label>
+                    <input type="text" id="instRegionInput" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-500" placeholder="예: 서울 / 경기 등">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">소개 및 가격</label>
+                    <input type="text" id="instIntroInput" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-500" placeholder="강습 스타일 및 비용 안내">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">연락처</label>
+                    <input type="text" id="instContactInput" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-500" placeholder="전화번호">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">오픈채팅 링크</label>
+                    <input type="text" id="instChatInput" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-500" placeholder="https://open.kakao.com/...">
+                </div>
+                <button id="btnSubmitInstructor" onclick="submitInstructor()" class="w-full bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-bold py-2.5 rounded-xl transition shadow-lg">강사 DB에 등록하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 내 프로필 설정 모달 -->
+    <div id="profileModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 w-full max-w-sm rounded-2xl p-6 space-y-4 shadow-2xl relative">
+            <button onclick="closeProfileModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-user text-emerald-400"></i> 내 프로필 설정</h3>
+            <p class="text-xs text-slate-400">글이나 댓글 작성 시 자동으로 사용될 닉네임을 설정하세요.</p>
+            <div class="space-y-3 text-sm">
+                <input type="text" id="myNicknameInput" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-500" placeholder="사용할 닉네임 입력">
+                <button onclick="saveMyProfile()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-2.5 rounded-xl transition shadow-lg">저장하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 자바스크립트 로직 -->
+    <script>
+        const NOTION_KEY = "ntn_n93269268034Hq0PBlRkSbu1L4RG4kXBO4RLRxdteYZfLR";
+        const POOL_DB = "40722bed9bd380d9b2f0cb24b8c3089d";
+        const INST_DB = "40722bed9bd38091bc79c69be4101cdd";
+        const COMM_DB = "40722bed9bd3806080c3fab88464aa2b";
+        const COMMENT_DB = "40722bed9bd38051902ce691cb8301af";
+
+        let rawCommunityList = [];
+        let currentActivePost = null;
+
+        window.onload = function() {
+            checkUserNickname();
+            loadPools();
+            loadInstructors();
+            loadCommunity();
+        };
+
+        function getMyNickname() {
+            return localStorage.getItem('diving_hub_nickname') || '';
+        }
+
+        function checkUserNickname() {
+            const nickname = getMyNickname();
+            const headerNameEl = document.getElementById('headerMyName');
+            const postAuthorEl = document.getElementById('postAuthorDisplay');
+            const commentAuthorEl = document.getElementById('commentAuthorDisplay');
+
+            if (!nickname) {
+                if(headerNameEl) headerNameEl.innerText = "프로필 설정 필요";
+                openProfileModal();
+            } else {
+                if(headerNameEl) headerNameEl.innerText = nickname;
+                if(postAuthorEl) postAuthorEl.innerText = nickname;
+                if(commentAuthorEl) commentAuthorEl.innerText = nickname;
+            }
+        }
+
+        function openProfileModal() {
+            document.getElementById('myNicknameInput').value = getMyNickname();
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+
+        function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
+
+        function saveMyProfile() {
+            const nickname = document.getElementById('myNicknameInput').value.trim();
+            if (!nickname) {
+                alert("사용하실 닉네임을 입력해주세요!");
+                return;
+            }
+            localStorage.setItem('diving_hub_nickname', nickname);
+            closeProfileModal();
+            checkUserNickname();
+            alert(`프로필이 '${nickname}'(으)로 저장되었습니다!`);
+        }
+
+        // 아코디언 토글 함수
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                content.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            }
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const d = new Date(dateString);
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            const hours = String(d.getHours()).padStart(2, '0');
+            const minutes = String(d.getMinutes()).padStart(2, '0');
+            return `${year}.${month}.${day} ${hours}:${minutes}`;
+        }
+
+        async function queryNotion(dbId, filter = null) {
+            const targetUrl = `https://api.notion.com/v1/databases/${dbId}/query`;
+            const bodyData = filter ? { filter: filter } : {};
+            const res = await fetch(targetUrl, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${NOTION_KEY}`,
+                    "Notion-Version": "2022-06-28",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(bodyData)
+            });
+            return await res.json();
+        }
+
+        async function createNotionPage(dbId, properties) {
+            const targetUrl = `https://api.notion.com/v1/pages`;
+            const res = await fetch(targetUrl, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${NOTION_KEY}`,
+                    "Notion-Version": "2022-06-28",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ parent: { database_id: dbId }, properties: properties })
+            });
+            return await res.json();
+        }
+
+        function getText(prop) {
+            if (!prop) return "-";
+            if (prop.type === "title" && prop.title && prop.title.length > 0) return prop.title.map(t => t.plain_text).join("");
+            if (prop.type === "rich_text" && prop.rich_text && prop.rich_text.length > 0) return prop.rich_text.map(t => t.plain_text).join("");
+            if (prop.type === "select" && prop.select) return prop.select.name;
+            if (prop.type === "url" && prop.url) return prop.url;
+            if (prop.type === "number" && prop.number !== null) return String(prop.number);
+            return "-";
+        }
+
+        function setLoading(buttonId, isLoading, defaultText) {
+            const btn = document.getElementById(buttonId);
+            if (!btn) return;
+            if (isLoading) {
+                btn.disabled = true;
+                btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>등록 중...</span>`;
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = `<span>${defaultText}</span>`;
+            }
+        }
+
+        async function loadPools() {
+            try {
+                const data = await queryNotion(POOL_DB);
+                const list = (data.results || []).map(r => ({
+                    name: getText(r.properties["이름"]),
+                    region: getText(r.properties["지역"]),
+                    depth: getText(r.properties["수심"]),
+                    phone: getText(r.properties["전화번호"]),
+                    link: getText(r.properties["예약링크"]),
+                    address: getText(r.properties["주소"])
+                }));
+                document.getElementById('poolsLoading').classList.add('hidden');
+                document.getElementById('poolsGrid').classList.remove('hidden');
+                
+                const g = document.getElementById('poolsGrid');
+                g.innerHTML = list.length ? '' : '<p class="text-slate-400 col-span-3 text-center py-8">등록된 잠수풀이 없습니다.</p>';
+                list.forEach(p => {
+                    g.innerHTML += `
+                        <div onclick='openPoolModal(${JSON.stringify(p)})' class="bg-slate-800 p-5 rounded-2xl border border-slate-700 space-y-3 cursor-pointer hover:border-emerald-500 transition shadow-lg">
+                            <div class="flex justify-between items-center">
+                                <span class="bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded text-xs font-semibold">${p.region}</span>
+                                <span class="text-xs text-slate-400"><i class="fa-solid fa-water"></i> 수심: ${p.depth}</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white">${p.name}</h3>
+                            <p class="text-xs text-slate-400 flex items-center gap-1.5"><i class="fa-solid fa-location-dot"></i> ${p.address}</p>
+                            <p class="text-xs text-slate-300 flex items-center gap-1.5"><i class="fa-solid fa-phone text-emerald-400"></i> ${p.phone}</p>
+                        </div>
+                    `;
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadInstructors() {
+            try {
+                const data = await queryNotion(INST_DB);
+                const list = (data.results || []).map(r => ({
+                    name: getText(r.properties["이름"]),
+                    cert: getText(r.properties["소속단체"]),
+                    region: getText(r.properties["활동지역"]),
+                    intro: getText(r.properties["소개및가격"]),
+                    contact: getText(r.properties["연락처"]),
+                    chat: getText(r.properties["오픈채팅링크"])
+                }));
+                document.getElementById('instructorsLoading').classList.add('hidden');
+                document.getElementById('instructorsGrid').classList.remove('hidden');
+                
+                const g = document.getElementById('instructorsGrid');
+                g.innerHTML = list.length ? '' : '<p class="text-slate-400 col-span-3 text-center py-8">등록된 강사가 없습니다.</p>';
+                list.forEach(i => {
+                    g.innerHTML += `
+                        <div onclick='openInstructorModal(${JSON.stringify(i)})' class="bg-slate-800 p-5 rounded-2xl border border-slate-700 space-y-3 cursor-pointer hover:border-cyan-500 transition shadow-lg">
+                            <div class="flex justify-between items-center">
+                                <span class="bg-cyan-500/20 text-cyan-400 px-2 py-0.5 rounded text-xs font-semibold">${i.region}</span>
+                                <span class="text-xs text-slate-400">${i.cert}</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white">${i.name} 강사</h3>
+                            <p class="text-xs text-slate-300 truncate">${i.intro}</p>
+                        </div>
+                    `;
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadCommunity() {
+            try {
+                const data = await queryNotion(COMM_DB);
+                const commentsData = await queryNotion(COMMENT_DB);
+                
+                const commentCounts = {};
+                (commentsData.results || []).forEach(cm => {
+                    const pid = getText(cm.properties["이름"]);
+                    commentCounts[pid] = (commentCounts[pid] || 0) + 1;
+                });
+
+                rawCommunityList = (data.results || []).map(r => ({
+                    id: r.id,
+                    title: getText(r.properties["제목"]),
+                    category: getText(r.properties["카테고리"]),
+                    content: getText(r.properties["내용"]),
+                    author: getText(r.properties["작성자"]),
+                    createdAt: r.created_time,
+                    commentCount: commentCounts[r.id] || 0
+                }));
+
+                document.getElementById('communityLoading').classList.add('hidden');
+                document.getElementById('communityList').classList.remove('hidden');
+
+                renderCommunity();
+            } catch (e) { console.error(e); }
+        }
+
+        function renderCommunity() {
+            const sortVal = document.getElementById('sortOption').value;
+            let sortedList = [...rawCommunityList];
+
+            if (sortVal === 'comments') {
+                sortedList.sort((a, b) => b.commentCount - a.commentCount);
+            } else {
+                sortedList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            }
+
+            const l = document.getElementById('communityList');
+            l.innerHTML = sortedList.length ? '' : '<p class="text-slate-400 text-center py-8">작성된 게시글이 없습니다.</p>';
+            
+            sortedList.forEach(c => {
+                l.innerHTML += `
+                    <div onclick='openCommunityModal(${JSON.stringify(c)})' class="bg-slate-800 p-5 rounded-2xl border border-slate-700 space-y-2 cursor-pointer hover:border-amber-500 transition shadow-lg">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <span class="bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded text-xs font-semibold">${c.category}</span>
+                                <span class="text-xs text-slate-400">작성자: ${c.author}</span>
+                                <span class="text-[11px] text-slate-500 ml-1"><i class="fa-regular fa-clock"></i> ${formatDate(c.createdAt)}</span>
+                            </div>
+                            <span class="text-xs text-amber-400 bg-slate-900/50 px-2.5 py-1 rounded-lg flex items-center gap-1.5 font-semibold">
+                                <i class="fa-solid fa-comment"></i> ${c.commentCount}
+                            </span>
+                        </div>
+                        <h3 class="text-base font-bold text-white">${c.title}</h3>
+                        <p class="text-xs text-slate-300 line-clamp-2">${c.content}</p>
+                    </div>
+                `;
+            });
+        }
+
+        async function loadComments(postId) {
+            const listEl = document.getElementById('commentsList');
+            listEl.innerHTML = `<p class="text-slate-500 text-[11px]"><i class="fa-solid fa-spinner fa-spin"></i> 댓글 로딩 중...</p>`;
+            try {
+                const filter = { property: "이름", title: { equals: postId } };
+                const data = await queryNotion(COMMENT_DB, filter);
+                const comments = (data.results || []).map(r => ({
+                    author: getText(r.properties["작성자"]),
+                    text: getText(r.properties["내용"]),
+                    createdAt: r.created_time
+                }));
+
+                comments.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+                
+                listEl.innerHTML = comments.length ? '' : '<p class="text-slate-500 text-[11px]">작성된 댓글이 없습니다.</p>';
+                comments.forEach(cm => {
+                    listEl.innerHTML += `
+                        <div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-700/50 space-y-1">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-amber-400 text-[11px]">${cm.author}</span>
+                                <span class="text-[10px] text-slate-500">${formatDate(cm.createdAt)}</span>
+                            </div>
+                            <p class="text-slate-300 text-xs">${cm.text}</p>
+                        </div>
+                    `;
+                });
+            } catch (e) {
+                listEl.innerHTML = `<p class="text-slate-500 text-[11px]">댓글을 불러오지 못했습니다.</p>`;
+            }
+        }
+
+        function openPoolModal(p) {
+            document.getElementById('commentsSection').classList.add('hidden');
+            document.getElementById('modalTitle').innerText = p.name;
+            document.getElementById('modalContent').innerHTML = `
+                <p><strong>지역:</strong> ${p.region}</p>
+                <p><strong>수심:</strong> ${p.depth}</p>
+                <p><strong>주소:</strong> ${p.address}</p>
+                <p><strong>전화번호:</strong> <a href="tel:${p.phone}" class="text-emerald-400 font-bold underline">${p.phone}</a></p>
+                <p><strong>예약 링크:</strong> <a href="${p.link.startsWith('http') ? p.link : 'https://' + p.link}" target="_blank" class="text-cyan-400 underline">${p.link}</a></p>
+            `;
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        function openInstructorModal(i) {
+            document.getElementById('commentsSection').classList.add('hidden');
+            document.getElementById('modalTitle').innerText = `${i.name} 강사 상세 정보`;
+            document.getElementById('modalContent').innerHTML = `
+                <p><strong>소속 단체:</strong> ${i.cert}</p>
+                <p><strong>활동 지역:</strong> ${i.region}</p>
+                <p><strong>소개 및 가격:</strong> ${i.intro}</p>
+                <p><strong>연락처:</strong> ${i.contact}</p>
+                <p><strong>오픈채팅:</strong> <a href="${i.chat.startsWith('http') ? i.chat : 'https://' + i.chat}" target="_blank" class="text-cyan-400 font-bold underline">채팅 참여하기</a></p>
+            `;
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        function openCommunityModal(c) {
+            currentActivePost = c;
+            document.getElementById('modalTitle').innerText = c.title;
+            document.getElementById('modalContent').innerHTML = `
+                <div class="flex justify-between items-center text-xs text-slate-400">
+                    <span class="text-amber-400 font-semibold">카테고리: ${c.category} | 작성자: ${c.author}</span>
+                    <span class="text-slate-500">${formatDate(c.createdAt)}</span>
+                </div>
+                <hr class="border-slate-700 my-2">
+                <p class="whitespace-pre-wrap text-slate-200">${c.content}</p>
+            `;
+            
+            document.getElementById('commentsSection').classList.remove('hidden');
+            document.getElementById('detailModal').classList.remove('hidden');
+            checkUserNickname();
+            loadComments(c.id);
+        }
+
+        function closeDetailModal() { document.getElementById('detailModal').classList.add('hidden'); }
+        function openPostModal() { checkUserNickname(); document.getElementById('postModal').classList.remove('hidden'); }
+        function closePostModal() { document.getElementById('postModal').classList.add('hidden'); }
+        function openInstructorPostModal() { document.getElementById('instructorPostModal').classList.remove('hidden'); }
+        function closeInstructorPostModal() { document.getElementById('instructorPostModal').classList.add('hidden'); }
+
+        async function submitPost() {
+            const author = getMyNickname();
+            if (!author) {
+                alert("프로필(닉네임)을 먼저 설정해주세요!");
+                openProfileModal();
+                return;
+            }
+
+            const title = document.getElementById('postTitleInput').value.trim();
+            const category = document.getElementById('postCategoryInput').value;
+            const content = document.getElementById('postContentInput').value.trim();
+
+            if (!title || !content) {
+                alert("제목과 내용을 입력해주세요!");
+                return;
+            }
+
+            setLoading('btnSubmitPost', true, '노션에 글 등록하기');
+
+            const properties = {
+                "제목": { title: [{ text: { content: title } }] },
+                "카테고리": { select: { name: category } },
+                "작성자": { rich_text: [{ text: { content: author } }] },
+                "내용": { rich_text: [{ text: { content: content } }] }
+            };
+
+            try {
+                const res = await createNotionPage(COMM_DB, properties);
+                if (res.object === "page") {
+                    alert("게시글이 성공적으로 등록되었습니다!");
+                    closePostModal();
+                    loadCommunity();
+                } else {
+                    alert("등록 실패: 노션 DB 속성을 확인해주세요.");
+                }
+            } catch (e) {
+                console.error(e);
+                alert("오류가 발생했습니다.");
+            } finally {
+                setLoading('btnSubmitPost', false, '노션에 글 등록하기');
+            }
+        }
+
+        async function submitInstructor() {
+            const name = document.getElementById('instNameInput').value.trim();
+            const cert = document.getElementById('instCertInput').value.trim();
+            const region = document.getElementById('instRegionInput').value.trim();
+            const intro = document.getElementById('instIntroInput').value.trim();
+            const contact = document.getElementById('instContactInput').value.trim();
+            const chat = document.getElementById('instChatInput').value.trim();
+
+            if (!name || !cert || !region) {
+                alert("이름, 소속 단체, 활동 지역은 필수 항목입니다!");
+                return;
+            }
+
+            setLoading('btnSubmitInstructor', true, '강사 DB에 등록하기');
+
+            const properties = {
+                "이름": { title: [{ text: { content: name } }] },
+                "소속단체": { rich_text: [{ text: { content: cert } }] },
+                "활동지역": { rich_text: [{ text: { content: region } }] },
+                "소개및가격": { rich_text: [{ text: { content: intro } }] },
+                "연락처": { rich_text: [{ text: { content: contact } }] },
+                "오픈채팅링크": { url: chat || null }
+            };
+
+            try {
+                const res = await createNotionPage(INST_DB, properties);
+                if (res.object === "page") {
+                    alert("강사 등록이 완료되었습니다!");
+                    closeInstructorPostModal();
+                    loadInstructors();
+                } else {
+                    alert("등록 실패: 강사 DB 속성을 확인해주세요.");
+                }
+            } catch (e) {
+                console.error(e);
+                alert("오류가 발생했습니다.");
+            } finally {
+                setLoading('btnSubmitInstructor', false, '강사 DB에 등록하기');
+            }
+        }
+
+        async function submitComment() {
+            const author = getMyNickname();
+            if (!author) {
+                alert("프로필(닉네임)을 먼저 설정해주세요!");
+                openProfileModal();
+                return;
+            }
+
+            const text = document.getElementById('commentTextInput').value.trim();
+            if (!text) {
+                alert("댓글 내용을 입력해주세요!");
+                return;
+            }
+
+            setLoading('btnSubmitComment', true, '등록');
+
+            const properties = {
+                "이름": { title: [{ text: { content: currentActivePost.id } }] },
+                "작성자": { rich_text: [{ text: { content: author } }] },
+                "내용": { rich_text: [{ text: { content: text } }] }
+            };
+
+            try {
+                const res = await createNotionPage(COMMENT_DB, properties);
+                if (res.object === "page") {
+                    document.getElementById('commentTextInput').value = '';
+                    loadComments(currentActivePost.id);
+                    loadCommunity();
+                } else {
+                    alert("댓글 등록 실패: 댓글 DB 속성을 확인하세요.");
+                }
+            } catch (e) {
+                console.error(e);
+                alert("댓글 등록 중 오류가 발생했습니다.");
+            } finally {
+                setLoading('btnSubmitComment', false, '등록');
+            }
+        }
+
+        function switchTab(t) {
+            ['pools', 'instructors', 'community', 'guide', 'license'].forEach(x => {
+                document.getElementById(`tab-${x}`).classList.add('hidden');
+                const btn = document.getElementById(`nav-${x}`);
+                if (btn) btn.className = "px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition";
+            });
+            document.getElementById(`tab-${t}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`nav-${t}`);
+            if (activeBtn) activeBtn.className = "px-3 py-2 rounded-lg text-emerald-400 bg-emerald-500/10 transition font-semibold";
+        }
+    </script>
+</body>
+</html>
