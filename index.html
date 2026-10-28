@@ -6,7 +6,7 @@
     <title>DIVING HUB - 대한민국 프리다이빙 & 스쿠버다이빙 올인원 플랫폼</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Identity Services 시스토크 로드 -->
+    <!-- 구글 로그인 SDK -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         body { padding-top: env(safe-area-inset-top); background-color: #0b1120; }
@@ -103,13 +103,14 @@
                 <div id="instructorsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 hidden"></div>
             </div>
 
-            <!-- 강사 상세 프로필 페이지 (전체 화면 방식) -->
+            <!-- 강사 상세 프로필 페이지 -->
             <div id="instructorDetailPage" class="hidden glass-card p-6 sm:p-8 rounded-2xl space-y-6 max-w-4xl mx-auto border border-cyan-500/30">
                 <div class="flex items-center justify-between">
                     <button onclick="hideInstructorDetailPage()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition">
                         <i class="fa-solid fa-arrow-left"></i> 목록으로 돌아가기
                     </button>
                     <div id="instructorOwnerButtons" class="hidden flex gap-2">
+                        <button onclick="startEditInstructor()" class="bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 border border-cyan-500/30 px-3 py-1.5 rounded-xl text-xs font-bold transition">수정</button>
                         <button onclick="deleteCurrentInstructor()" class="bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-xl text-xs font-bold transition">삭제</button>
                     </div>
                 </div>
@@ -136,11 +137,11 @@
                 </div>
             </div>
 
-            <!-- 강사 프로필 등록 페이지 -->
+            <!-- 강사 프로필 등록/수정 페이지 -->
             <div id="instructorWritePage" class="hidden glass-card p-6 sm:p-8 rounded-2xl space-y-6 max-w-4xl mx-auto border border-slate-800">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-chalkboard-user text-cyan-400"></i> 강사 디렉토리 프로필 등록
+                    <h2 id="instructorWriteTitle" class="text-lg font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-chalkboard-user text-cyan-400"></i> 강사 프로필 등록
                     </h2>
                     <button onclick="hideInstructorWritePage()" class="text-slate-400 hover:text-white text-xs"><i class="fa-solid fa-xmark text-lg"></i></button>
                 </div>
@@ -161,7 +162,7 @@
                     </div>
                     <div>
                         <label class="block text-slate-400 mb-1.5 font-medium">강습 커리큘럼 및 이력 상세 소개</label>
-                        <textarea id="instIntroInput" rows="10" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3.5 text-white text-sm focus:border-cyan-500 focus:outline-none leading-relaxed" placeholder="강습 일정, 수강료, 제공 장비 등을 상세히 기재해주세요."></textarea>
+                        <textarea id="instIntroInput" rows="10" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3.5 text-white text-sm focus:border-cyan-500 focus:outline-none leading-relaxed" placeholder="강습 일정, 수강료 등을 상세히 기재해주세요."></textarea>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
@@ -175,7 +176,7 @@
                     </div>
                     <div class="flex gap-3 pt-2">
                         <button onclick="hideInstructorWritePage()" class="w-1/3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-xl transition text-xs">취소</button>
-                        <button onclick="submitInstructor()" class="w-2/3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3 rounded-xl transition text-xs shadow-lg shadow-cyan-500/20">강사 DB 등록하기</button>
+                        <button id="instructorSubmitBtn" onclick="submitInstructor()" class="w-2/3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3 rounded-xl transition text-xs shadow-lg shadow-cyan-500/20">강사 DB 등록하기</button>
                     </div>
                 </div>
             </div>
@@ -219,6 +220,7 @@
                         <i class="fa-solid fa-arrow-left"></i> 목록으로 돌아가기
                     </button>
                     <div id="communityOwnerButtons" class="hidden flex gap-2">
+                        <button onclick="startEditPost()" class="bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 border border-cyan-500/30 px-3 py-1.5 rounded-xl text-xs font-bold transition">수정</button>
                         <button onclick="deleteCurrentPost()" class="bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-xl text-xs font-bold transition">삭제</button>
                     </div>
                 </div>
@@ -250,10 +252,10 @@
                 </div>
             </div>
 
-            <!-- 커뮤니티 글작성 페이지 -->
+            <!-- 커뮤니티 글작성/수정 페이지 -->
             <div id="communityWritePage" class="hidden glass-card p-6 sm:p-8 rounded-2xl space-y-6 max-w-4xl mx-auto border border-slate-800">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                    <h2 id="communityWriteTitle" class="text-lg font-bold text-white flex items-center gap-2">
                         <i class="fa-solid fa-pen text-cyan-400"></i> 새 게시글 작성
                     </h2>
                     <button onclick="hideCommunityWritePage()" class="text-slate-400 hover:text-white text-xs"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -278,7 +280,7 @@
                     </div>
                     <div class="flex gap-3 pt-2">
                         <button onclick="hideCommunityWritePage()" class="w-1/3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-xl transition text-xs">취소</button>
-                        <button onclick="submitPost()" class="w-2/3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3 rounded-xl transition text-xs shadow-lg shadow-cyan-500/20">게시글 등록하기</button>
+                        <button id="communitySubmitBtn" onclick="submitPost()" class="w-2/3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3 rounded-xl transition text-xs shadow-lg shadow-cyan-500/20">게시글 등록하기</button>
                     </div>
                 </div>
             </div>
@@ -519,6 +521,8 @@
         let currentActivePost = null;
         let currentActiveInstructor = null;
         let currentCategoryFilter = '전체';
+        let isEditingInstructor = false;
+        let isEditingPost = false;
 
         const guideDataMap = {
             vals: {
@@ -586,7 +590,6 @@
             loadCommunity();
         };
 
-        /* 구글 로그인 및 세션 관리 */
         function parseJwt(token) {
             try {
                 var base64Url = token.split('.')[1];
@@ -708,6 +711,20 @@
             return await res.json();
         }
 
+        async function updateNotionPage(pageId, properties) {
+            const targetUrl = `https://api.notion.com/v1/pages/${pageId}`;
+            const res = await fetch(targetUrl, {
+                method: "PATCH",
+                headers: {
+                    "Authorization": `Bearer ${NOTION_KEY}`,
+                    "Notion-Version": "2022-06-28",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ properties: properties })
+            });
+            return await res.json();
+        }
+
         async function archiveNotionPage(pageId) {
             const targetUrl = `https://api.notion.com/v1/pages/${pageId}`;
             const res = await fetch(targetUrl, {
@@ -731,7 +748,7 @@
             return "-";
         }
 
-        /* 1. 전국 잠수풀 (카드 클릭 시 예약 링크 바로 직행) */
+        /* 1. 전국 잠수풀 */
         async function loadPools() {
             try {
                 const data = await queryNotion(POOL_DB);
@@ -767,10 +784,12 @@
             } catch (e) { console.error(e); }
         }
 
-        /* 2. 강사 디렉토리 (본인 글 수정/삭제 지원) */
+        /* 2. 강사 디렉토리 (본인글 수정/삭제 및 [내 글] 태그 지원) */
         async function loadInstructors() {
             try {
                 const data = await queryNotion(INST_DB);
+                const myInfo = getMyProfileInfo();
+
                 const list = (data.results || []).map(r => ({
                     id: r.id,
                     name: getText(r.properties["이름"]),
@@ -787,8 +806,10 @@
                 const g = document.getElementById('instructorsGrid');
                 g.innerHTML = list.length ? '' : '<p class="text-slate-400 col-span-3 text-center py-8">등록된 강사가 없습니다.</p>';
                 list.forEach(i => {
+                    const isMyPost = myInfo.email && i.authorEmail && myInfo.email === i.authorEmail;
                     g.innerHTML += `
-                        <div onclick='showInstructorDetailPage(${JSON.stringify(i)})' class="glass-card p-5 rounded-2xl space-y-3 cursor-pointer hover:border-cyan-500 transition shadow-lg">
+                        <div onclick='showInstructorDetailPage(${JSON.stringify(i)})' class="glass-card p-5 rounded-2xl space-y-3 cursor-pointer hover:border-cyan-500 transition shadow-lg relative">
+                            ${isMyPost ? '<span class="absolute top-4 right-4 bg-cyan-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded-md">내 프로필</span>' : ''}
                             <div class="flex justify-between items-center">
                                 <span class="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-2.5 py-0.5 rounded-lg text-[10px] font-bold">${i.region}</span>
                                 <span class="text-xs text-slate-400 font-semibold">${i.cert}</span>
@@ -816,7 +837,6 @@
             const chatBtn = document.getElementById('instChatBtn');
             chatBtn.href = i.chat.startsWith('http') ? i.chat : 'https://' + i.chat;
 
-            // 본인 글인 경우에만 삭제 버튼 노출
             const myInfo = getMyProfileInfo();
             const ownerBtns = document.getElementById('instructorOwnerButtons');
             if (myInfo.email && i.authorEmail && myInfo.email === i.authorEmail) {
@@ -836,13 +856,47 @@
         function showInstructorWritePage() {
             const myInfo = getMyProfileInfo();
             if (!myInfo.email) { alert("구글 로그인이 필요합니다!"); openProfileModal(); return; }
+            
+            isEditingInstructor = false;
+            document.getElementById('instructorWriteTitle').innerHTML = `<i class="fa-solid fa-chalkboard-user text-cyan-400"></i> 강사 프로필 등록`;
+            document.getElementById('instructorSubmitBtn').innerText = "강사 DB 등록하기";
+
+            document.getElementById('instNameInput').value = '';
+            document.getElementById('instCertInput').value = '';
+            document.getElementById('instRegionInput').value = '';
+            document.getElementById('instIntroInput').value = '';
+            document.getElementById('instContactInput').value = '';
+            document.getElementById('instChatInput').value = '';
+
             document.getElementById('instructorsMainView').classList.add('hidden');
             document.getElementById('instructorDetailPage').classList.add('hidden');
             document.getElementById('instructorWritePage').classList.remove('hidden');
         }
+
+        function startEditInstructor() {
+            if (!currentActiveInstructor) return;
+            isEditingInstructor = true;
+            document.getElementById('instructorWriteTitle').innerHTML = `<i class="fa-solid fa-pen text-cyan-400"></i> 강사 프로필 수정`;
+            document.getElementById('instructorSubmitBtn').innerText = "수정 완료하기";
+
+            document.getElementById('instNameInput').value = currentActiveInstructor.name;
+            document.getElementById('instCertInput').value = currentActiveInstructor.cert;
+            document.getElementById('instRegionInput').value = currentActiveInstructor.region;
+            document.getElementById('instIntroInput').value = currentActiveInstructor.intro;
+            document.getElementById('instContactInput').value = currentActiveInstructor.contact;
+            document.getElementById('instChatInput').value = currentActiveInstructor.chat;
+
+            document.getElementById('instructorDetailPage').classList.add('hidden');
+            document.getElementById('instructorWritePage').classList.remove('hidden');
+        }
+
         function hideInstructorWritePage() {
             document.getElementById('instructorWritePage').classList.add('hidden');
-            document.getElementById('instructorsMainView').classList.remove('hidden');
+            if (isEditingInstructor && currentActiveInstructor) {
+                showInstructorDetailPage(currentActiveInstructor);
+            } else {
+                document.getElementById('instructorsMainView').classList.remove('hidden');
+            }
         }
 
         async function submitInstructor() {
@@ -854,22 +908,27 @@
             const region = document.getElementById('instRegionInput').value.trim();
             if (!name || !cert || !region) { alert("성함, 단체, 지역을 입력해주세요!"); return; }
 
+            const properties = {
+                "이름": { title: [{ text: { content: name } }] },
+                "소속단체": { rich_text: [{ text: { content: cert } }] },
+                "활동지역": { rich_text: [{ text: { content: region } }] },
+                "소개및가격": { rich_text: [{ text: { content: document.getElementById('instIntroInput').value.trim() } }] },
+                "연락처": { rich_text: [{ text: { content: document.getElementById('instContactInput').value.trim() } }] },
+                "오픈채팅링크": { url: document.getElementById('instChatInput').value.trim() || null },
+                "작성자이메일": { rich_text: [{ text: { content: myInfo.email } }] }
+            };
+
             try {
-                const res = await createNotionPage(INST_DB, {
-                    "이름": { title: [{ text: { content: name } }] },
-                    "소속단체": { rich_text: [{ text: { content: cert } }] },
-                    "활동지역": { rich_text: [{ text: { content: region } }] },
-                    "소개및가격": { rich_text: [{ text: { content: document.getElementById('instIntroInput').value.trim() } }] },
-                    "연락처": { rich_text: [{ text: { content: document.getElementById('instContactInput').value.trim() } }] },
-                    "오픈채팅링크": { url: document.getElementById('instChatInput').value.trim() || null },
-                    "작성자이메일": { rich_text: [{ text: { content: myInfo.email } }] }
-                });
-                if (res.object === "page") {
+                if (isEditingInstructor && currentActiveInstructor) {
+                    await updateNotionPage(currentActiveInstructor.id, properties);
+                    alert("프로필이 수정되었습니다!");
+                } else {
+                    await createNotionPage(INST_DB, properties);
                     alert("강사 프로필 등록 완료!");
-                    hideInstructorWritePage();
-                    loadInstructors();
                 }
-            } catch (e) { alert("등록 오류"); }
+                hideInstructorWritePage();
+                loadInstructors();
+            } catch (e) { alert("저장 중 오류가 발생했습니다."); }
         }
 
         async function deleteCurrentInstructor() {
@@ -882,7 +941,7 @@
             } catch (e) { alert("삭제 실패"); }
         }
 
-        /* 3. 커뮤니티 (카테고리 탭 필터 적용) */
+        /* 3. 커뮤니티 (본인글 수정/삭제 및 [내 글] 태그 지원) */
         async function loadCommunity() {
             try {
                 const data = await queryNotion(COMM_DB);
@@ -925,6 +984,7 @@
         }
 
         function renderCommunity() {
+            const myInfo = getMyProfileInfo();
             let filteredList = [...rawCommunityList];
             if (currentCategoryFilter !== '전체') {
                 filteredList = filteredList.filter(c => c.category === currentCategoryFilter);
@@ -935,8 +995,10 @@
             l.innerHTML = filteredList.length ? '' : '<p class="text-slate-400 text-center py-8">등록된 게시글이 없습니다.</p>';
             
             filteredList.forEach(c => {
+                const isMyPost = myInfo.email && c.authorEmail && myInfo.email === c.authorEmail;
                 l.innerHTML += `
-                    <div onclick='showCommunityDetailPage(${JSON.stringify(c)})' class="glass-card p-4 sm:p-5 rounded-2xl space-y-2 cursor-pointer hover:border-cyan-500 transition">
+                    <div onclick='showCommunityDetailPage(${JSON.stringify(c)})' class="glass-card p-4 sm:p-5 rounded-2xl space-y-2 cursor-pointer hover:border-cyan-500 transition relative">
+                        ${isMyPost ? '<span class="absolute top-4 right-4 bg-cyan-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded-md">내 글</span>' : ''}
                         <div class="flex justify-between items-center text-xs">
                             <div class="flex items-center gap-2">
                                 <span class="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-2 py-0.5 rounded-md font-bold">${c.category}</span>
@@ -983,14 +1045,40 @@
         function showCommunityWritePage() {
             const myInfo = getMyProfileInfo();
             if (!myInfo.email) { alert("구글 로그인이 필요합니다!"); openProfileModal(); return; }
+
+            isEditingPost = false;
+            document.getElementById('communityWriteTitle').innerHTML = `<i class="fa-solid fa-pen text-cyan-400"></i> 새 게시글 작성`;
+            document.getElementById('communitySubmitBtn').innerText = "게시글 등록하기";
+
+            document.getElementById('postTitleInput').value = '';
+            document.getElementById('postContentInput').value = '';
+
             document.getElementById('communityMainView').classList.add('hidden');
+            document.getElementById('communityDetailPage').classList.add('hidden');
+            document.getElementById('communityWritePage').classList.remove('hidden');
+        }
+
+        function startEditPost() {
+            if (!currentActivePost) return;
+            isEditingPost = true;
+            document.getElementById('communityWriteTitle').innerHTML = `<i class="fa-solid fa-pen text-cyan-400"></i> 게시글 수정`;
+            document.getElementById('communitySubmitBtn').innerText = "수정 완료하기";
+
+            document.getElementById('postCategoryInput').value = currentActivePost.category;
+            document.getElementById('postTitleInput').value = currentActivePost.title;
+            document.getElementById('postContentInput').value = currentActivePost.content;
+
             document.getElementById('communityDetailPage').classList.add('hidden');
             document.getElementById('communityWritePage').classList.remove('hidden');
         }
 
         function hideCommunityWritePage() {
             document.getElementById('communityWritePage').classList.add('hidden');
-            document.getElementById('communityMainView').classList.remove('hidden');
+            if (isEditingPost && currentActivePost) {
+                showCommunityDetailPage(currentActivePost);
+            } else {
+                document.getElementById('communityMainView').classList.remove('hidden');
+            }
         }
 
         async function submitPost() {
@@ -1004,22 +1092,25 @@
 
             const badgeTitle = myInfo.role === '인증강사' ? `${myInfo.nickname} [강사]` : `${myInfo.nickname} [${myInfo.level}]`;
 
+            const properties = {
+                "제목": { title: [{ text: { content: title } }] },
+                "카테고리": { select: { name: category } },
+                "작성자": { rich_text: [{ text: { content: badgeTitle } }] },
+                "내용": { rich_text: [{ text: { content: content } }] },
+                "작성자이메일": { rich_text: [{ text: { content: myInfo.email } }] }
+            };
+
             try {
-                const res = await createNotionPage(COMM_DB, {
-                    "제목": { title: [{ text: { content: title } }] },
-                    "카테고리": { select: { name: category } },
-                    "작성자": { rich_text: [{ text: { content: badgeTitle } }] },
-                    "내용": { rich_text: [{ text: { content: content } }] },
-                    "작성자이메일": { rich_text: [{ text: { content: myInfo.email } }] }
-                });
-                if (res.object === "page") {
+                if (isEditingPost && currentActivePost) {
+                    await updateNotionPage(currentActivePost.id, properties);
+                    alert("게시글이 수정되었습니다!");
+                } else {
+                    await createNotionPage(COMM_DB, properties);
                     alert("게시글이 성공적으로 등록되었습니다!");
-                    document.getElementById('postTitleInput').value = '';
-                    document.getElementById('postContentInput').value = '';
-                    hideCommunityWritePage();
-                    loadCommunity();
                 }
-            } catch (e) { alert("등록에 실패했습니다."); }
+                hideCommunityWritePage();
+                loadCommunity();
+            } catch (e) { alert("저장 중 오류가 발생했습니다."); }
         }
 
         async function deleteCurrentPost() {
