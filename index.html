@@ -47,7 +47,7 @@
         </div>
     </header>
 
-    <!-- 메인 히어로 배너 (잠수풀 탭에서만 노출) -->
+    <!-- 메인 히어로 배너 -->
     <div id="mainHeroBanner" class="relative overflow-hidden bg-gradient-to-b from-slate-900 via-slate-950 to-[#0b1120] border-b border-slate-800/60 py-10 px-4 text-center">
         <div class="max-w-3xl mx-auto space-y-3">
             <span class="px-3.5 py-1 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 text-xs font-bold tracking-wide">
@@ -243,6 +243,10 @@
                     <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-3">
                         <div class="flex justify-between items-center text-xs text-slate-400">
                             <span>댓글 작성자: <strong id="commentAuthorDisplay" class="text-amber-400">로그인 필요</strong></span>
+                            <label class="inline-flex items-center gap-1.5 cursor-pointer text-slate-300 hover:text-white">
+                                <input type="checkbox" id="commentAnonymousCheck" checked class="rounded bg-slate-950 border-slate-800 text-cyan-500 focus:ring-0 w-3.5 h-3.5">
+                                <span>익명으로 작성</span>
+                            </label>
                         </div>
                         <textarea id="commentTextInput" rows="3" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-cyan-500" placeholder="댓글을 남겨보세요..."></textarea>
                         <div class="flex justify-end">
@@ -261,14 +265,22 @@
                     <button onclick="hideCommunityWritePage()" class="text-slate-400 hover:text-white text-xs"><i class="fa-solid fa-xmark text-lg"></i></button>
                 </div>
                 <div class="space-y-4 text-xs">
-                    <div>
-                        <label class="block text-slate-400 mb-1.5 font-medium">카테고리 선택</label>
-                        <select id="postCategoryInput" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:border-cyan-500 focus:outline-none">
-                            <option value="자유">자유 수다</option>
-                            <option value="버디모집">버디 모집</option>
-                            <option value="장터">중고 장터</option>
-                            <option value="질문">질문 & 답변</option>
-                        </select>
+                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+                        <div class="w-full sm:w-1/2">
+                            <label class="block text-slate-400 mb-1.5 font-medium">카테고리 선택</label>
+                            <select id="postCategoryInput" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:border-cyan-500 focus:outline-none">
+                                <option value="자유">자유 수다</option>
+                                <option value="버디모집">버디 모집</option>
+                                <option value="장터">중고 장터</option>
+                                <option value="질문">질문 & 답변</option>
+                            </select>
+                        </div>
+                        <div class="pt-2 sm:pt-6">
+                            <label class="inline-flex items-center gap-2 cursor-pointer bg-slate-900 border border-slate-800 px-4 py-2.5 rounded-xl text-slate-300 hover:text-white transition w-full sm:w-auto">
+                                <input type="checkbox" id="postAnonymousCheck" checked class="rounded bg-slate-950 border-slate-800 text-cyan-500 focus:ring-0 w-4 h-4">
+                                <span class="font-bold">익명으로 작성 (체크 시 닉네임 감춤)</span>
+                            </label>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-slate-400 mb-1.5 font-medium">글 제목</label>
@@ -613,6 +625,7 @@
             }
             checkLoginState();
             closeProfileModal();
+            renderCommunity(); // 최신 닉네임 연동을 위해 재렌더링
             alert(`환영합니다, ${profile.name}님!`);
         }
 
@@ -623,6 +636,7 @@
             localStorage.removeItem('diving_hub_level');
             checkLoginState();
             closeProfileModal();
+            renderCommunity();
             alert("로그아웃되었습니다.");
         }
 
@@ -662,7 +676,8 @@
             localStorage.setItem('diving_hub_level', document.getElementById('myLevelInput').value);
             closeProfileModal();
             checkLoginState();
-            alert("프로필이 저장되었습니다!");
+            renderCommunity(); // 프로필 변경 시 작성했던 과거 글 작성자 뱃지 실시간 동적 갱신
+            alert("프로필 정보가 업데이트되었습니다!");
         }
 
         function getMyProfileInfo() {
@@ -672,6 +687,19 @@
                 role: localStorage.getItem('diving_hub_role') || '일반다이버',
                 level: localStorage.getItem('diving_hub_level') || 'Level 1'
             };
+        }
+
+        // 실시간 최신 프로필 기반 작성자 명칭 동적 생성 함수
+        function getDynamicAuthorDisplayName(rawAuthorText, authorEmail) {
+            if (rawAuthorText === '익명' || rawAuthorText.startsWith('익명')) {
+                return '익명';
+            }
+            const myInfo = getMyProfileInfo();
+            if (myInfo.email && authorEmail && myInfo.email === authorEmail) {
+                const badge = myInfo.role === '인증강사' ? '[강사]' : `[${myInfo.level}]`;
+                return `${myInfo.nickname} ${badge}`;
+            }
+            return rawAuthorText;
         }
 
         function formatDate(ds) {
@@ -998,12 +1026,14 @@
             
             filteredList.forEach(c => {
                 const isMyPost = myInfo.email && c.authorEmail && myInfo.email === c.authorEmail;
+                const dynamicAuthor = getDynamicAuthorDisplayName(c.author, c.authorEmail);
+                
                 l.innerHTML += `
                     <div onclick='showCommunityDetailPage(${JSON.stringify(c)})' class="glass-card p-4 sm:p-5 rounded-2xl space-y-2 cursor-pointer hover:border-cyan-500 transition">
                         <div class="flex justify-between items-center text-xs">
                             <div class="flex items-center gap-2">
                                 <span class="bg-teal-500/20 text-teal-300 border border-teal-500/30 px-2 py-0.5 rounded-md font-bold">${c.category}</span>
-                                <span class="text-slate-300 font-medium">${c.author}</span>
+                                <span class="text-slate-300 font-medium">${dynamicAuthor}</span>
                             </div>
                             <div class="flex items-center gap-2">
                                 ${isMyPost ? '<span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold text-[10px] px-2 py-0.5 rounded-md">내 글</span>' : ''}
@@ -1022,8 +1052,10 @@
             document.getElementById('communityMainView').classList.add('hidden');
             document.getElementById('communityWritePage').classList.add('hidden');
             
+            const dynamicAuthor = getDynamicAuthorDisplayName(c.author, c.authorEmail);
+            
             document.getElementById('detailCategory').innerText = c.category;
-            document.getElementById('detailAuthor').innerText = c.author;
+            document.getElementById('detailAuthor').innerText = dynamicAuthor;
             document.getElementById('detailDate').innerText = formatDate(c.createdAt);
             document.getElementById('detailTitle').innerText = c.title;
             document.getElementById('detailBody').innerText = c.content;
@@ -1056,6 +1088,7 @@
 
             document.getElementById('postTitleInput').value = '';
             document.getElementById('postContentInput').value = '';
+            document.getElementById('postAnonymousCheck').checked = true; // 디폴트 익명 체크
 
             document.getElementById('communityMainView').classList.add('hidden');
             document.getElementById('communityDetailPage').classList.add('hidden');
@@ -1071,6 +1104,7 @@
             document.getElementById('postCategoryInput').value = currentActivePost.category;
             document.getElementById('postTitleInput').value = currentActivePost.title;
             document.getElementById('postContentInput').value = currentActivePost.content;
+            document.getElementById('postAnonymousCheck').checked = (currentActivePost.author === '익명');
 
             document.getElementById('communityDetailPage').classList.add('hidden');
             document.getElementById('communityWritePage').classList.remove('hidden');
@@ -1092,14 +1126,19 @@
             const title = document.getElementById('postTitleInput').value.trim();
             const category = document.getElementById('postCategoryInput').value;
             const content = document.getElementById('postContentInput').value.trim();
+            const isAnonymous = document.getElementById('postAnonymousCheck').checked;
+
             if (!title || !content) { alert("제목과 내용을 모두 입력하세요!"); return; }
 
-            const badgeTitle = myInfo.role === '인증강사' ? `${myInfo.nickname} [강사]` : `${myInfo.nickname} [${myInfo.level}]`;
+            let authorText = "익명";
+            if (!isAnonymous) {
+                authorText = myInfo.role === '인증강사' ? `${myInfo.nickname} [강사]` : `${myInfo.nickname} [${myInfo.level}]`;
+            }
 
             const properties = {
                 "제목": { title: [{ text: { content: title } }] },
                 "카테고리": { select: { name: category } },
-                "작성자": { rich_text: [{ text: { content: badgeTitle } }] },
+                "작성자": { rich_text: [{ text: { content: authorText } }] },
                 "내용": { rich_text: [{ text: { content: content } }] },
                 "작성자이메일": { rich_text: [{ text: { content: myInfo.email } }] }
             };
@@ -1171,16 +1210,18 @@
                 const data = await queryNotion(COMMENT_DB, { property: "이름", title: { equals: postId } });
                 const comments = (data.results || []).map(r => ({
                     author: getText(r.properties["작성자"]),
+                    authorEmail: getText(r.properties["작성자이메일"]),
                     text: getText(r.properties["내용"]),
                     createdAt: r.created_time
                 })).sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
                 
                 listEl.innerHTML = comments.length ? '' : '<p class="text-slate-500 text-xs py-2">등록된 댓글이 없습니다.</p>';
                 comments.forEach(cm => {
+                    const dynamicAuthor = getDynamicAuthorDisplayName(cm.author, cm.authorEmail);
                     listEl.innerHTML += `
                         <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800 space-y-1">
                             <div class="flex justify-between text-xs">
-                                <span class="font-bold text-amber-400">${cm.author}</span>
+                                <span class="font-bold text-amber-400">${dynamicAuthor}</span>
                                 <span class="text-slate-500 text-[11px]">${formatDate(cm.createdAt)}</span>
                             </div>
                             <p class="text-slate-200 text-xs leading-relaxed">${cm.text}</p>
@@ -1195,15 +1236,20 @@
             if (!myInfo.email) { openProfileModal(); return; }
 
             const text = document.getElementById('commentTextInput').value.trim();
+            const isAnonymous = document.getElementById('commentAnonymousCheck').checked;
             if (!text) { alert("댓글 내용을 입력하세요!"); return; }
 
-            const badgeTitle = myInfo.role === '인증강사' ? `${myInfo.nickname} [강사]` : `${myInfo.nickname} [${myInfo.level}]`;
+            let authorText = "익명";
+            if (!isAnonymous) {
+                authorText = myInfo.role === '인증강사' ? `${myInfo.nickname} [강사]` : `${myInfo.nickname} [${myInfo.level}]`;
+            }
 
             try {
                 const res = await createNotionPage(COMMENT_DB, {
                     "이름": { title: [{ text: { content: currentActivePost.id } }] },
-                    "작성자": { rich_text: [{ text: { content: badgeTitle } }] },
-                    "내용": { rich_text: [{ text: { content: text } }] }
+                    "작성자": { rich_text: [{ text: { content: authorText } }] },
+                    "내용": { rich_text: [{ text: { content: text } }] },
+                    "작성자이메일": { rich_text: [{ text: { content: myInfo.email } }] }
                 });
                 if (res.object === "page") {
                     document.getElementById('commentTextInput').value = '';
