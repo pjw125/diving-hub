@@ -37,12 +37,11 @@
             </div>
         </div>
 
-        <!-- 가로 스크롤 탭 메뉴 -->
+        <!-- 가로 스크롤 탭 메뉴 (지식 탭 삭제 완료) -->
         <div class="max-w-7xl mx-auto px-3 border-t border-slate-800/50 overflow-x-auto scrollbar-none flex space-x-2 py-2">
             <button onclick="switchTab('pools')" id="nav-pools" class="px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition bg-gradient-to-r from-cyan-500 to-teal-500 text-slate-950 shadow-md shadow-cyan-500/20">전국 잠수풀</button>
             <button onclick="switchTab('instructors')" id="nav-instructors" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-900">강사 디렉토리</button>
             <button onclick="switchTab('community')" id="nav-community" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-900">커뮤니티</button>
-            <button onclick="switchTab('guide')" id="nav-guide" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-900">지식 & 이퀄라이징</button>
             <button onclick="switchTab('license')" id="nav-license" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-900">자격증 체계 비교</button>
         </div>
     </header>
@@ -57,7 +56,7 @@
                 세상의 모든 다이빙 정보를<br class="sm:hidden"><span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-amber-300"> 단 한 곳에서 한눈에</span>
             </h2>
             <p class="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-xl mx-auto">
-                전국 주요 잠수풀 예약 정보부터 대표 강사진 디렉토리, 실전 기술 매뉴얼, 커뮤니티까지 집약했습니다.
+                전국 주요 잠수풀 예약 정보부터 대표 강사진 디렉토리, 커뮤니티까지 집약했습니다.
             </p>
         </div>
     </div>
@@ -297,70 +296,7 @@
             </div>
         </section>
 
-        <!-- 4. 다이빙 지식 & 이퀄라이징 탭 -->
-        <section id="tab-guide" class="hidden space-y-6">
-            <div id="guideMainView" class="space-y-6">
-                <div class="glass-card p-5 rounded-2xl border-l-4 border-amber-400">
-                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-book-open text-amber-400"></i> 수중 다이빙 지식 & 실전 매뉴얼
-                    </h2>
-                    <p class="text-xs text-slate-400 mt-1">카드를 클릭하시면 상세 동작 절차와 도해 매뉴얼이 풀페이지로 전환됩니다.</p>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                    <div class="glass-card p-5 rounded-2xl hover:border-cyan-500 transition cursor-pointer space-y-3" onclick="openGuideDetailPage('vals')">
-                        <span class="bg-cyan-500/20 text-cyan-300 px-2.5 py-0.5 rounded-md text-[11px] font-bold border border-cyan-500/30">압력평형</span>
-                        <h3 class="text-base font-bold text-white">1. 발살바 (Valsalva) 호흡법</h3>
-                        <p class="text-xs text-slate-400 line-clamp-3 leading-relaxed">복근과 폐의 공기로 이관을 여는 초급 기술. 적용법과 한계점 분석.</p>
-                        <span class="text-cyan-400 text-xs font-semibold inline-flex items-center gap-1">상세 매뉴얼 보기 <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
-                    </div>
-                    <div class="glass-card p-5 rounded-2xl hover:border-cyan-500 transition cursor-pointer space-y-3" onclick="openGuideDetailPage('frenzel')">
-                        <span class="bg-teal-500/20 text-teal-300 px-2.5 py-0.5 rounded-md text-[11px] font-bold border border-teal-500/30">핵심 기술 ★</span>
-                        <h3 class="text-base font-bold text-white">2. 프렌젤 (Frenzel) 3단계 완성</h3>
-                        <p class="text-xs text-slate-400 line-clamp-3 leading-relaxed">후두개 닫기, 연구개 중립, 혀 피스톤 밀어 올리기 단계별 실전 훈련법.</p>
-                        <span class="text-cyan-400 text-xs font-semibold inline-flex items-center gap-1">상세 매뉴얼 보기 <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
-                    </div>
-                    <div class="glass-card p-5 rounded-2xl hover:border-cyan-500 transition cursor-pointer space-y-3" onclick="openGuideDetailPage('mouthfill')">
-                        <span class="bg-cyan-500/20 text-cyan-300 px-2.5 py-0.5 rounded-md text-[11px] font-bold border border-cyan-500/30">딥 다이빙</span>
-                        <h3 class="text-base font-bold text-white">3. 마우스필 (Mouthfill) 스킬</h3>
-                        <p class="text-xs text-slate-400 line-clamp-3 leading-relaxed">30m 이상 딥다이빙 시 잔류용적 이하 수심 압력평형 가이드.</p>
-                        <span class="text-cyan-400 text-xs font-semibold inline-flex items-center gap-1">상세 매뉴얼 보기 <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
-                    </div>
-                    <div class="glass-card p-5 rounded-2xl hover:border-cyan-500 transition cursor-pointer space-y-3" onclick="openGuideDetailPage('duckdive')">
-                        <span class="bg-teal-500/20 text-teal-300 px-2.5 py-0.5 rounded-md text-[11px] font-bold border border-teal-500/30">입수 테크닉</span>
-                        <h3 class="text-base font-bold text-white">4. 덕다이빙 (Duck Dive) 정석</h3>
-                        <p class="text-xs text-slate-400 line-clamp-3 leading-relaxed">체중 이동과 킥 타이밍을 활용한 무소음 수직 입수 4단계 도해.</p>
-                        <span class="text-cyan-400 text-xs font-semibold inline-flex items-center gap-1">상세 매뉴얼 보기 <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
-                    </div>
-                    <div class="glass-card p-5 rounded-2xl hover:border-cyan-500 transition cursor-pointer space-y-3" onclick="openGuideDetailPage('trouble')">
-                        <span class="bg-amber-500/20 text-amber-300 px-2.5 py-0.5 rounded-md text-[11px] font-bold border border-amber-500/30">자가 진단</span>
-                        <h3 class="text-base font-bold text-white">5. 귀가 안 뚫릴 때 원인 및 스트레칭</h3>
-                        <p class="text-xs text-slate-400 line-clamp-3 leading-relaxed">이관 부종, 턱 관절 긴장, 연구개 조절 미숙 진단 및 예방 루틴.</p>
-                        <span class="text-cyan-400 text-xs font-semibold inline-flex items-center gap-1">상세 매뉴얼 보기 <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
-                    </div>
-                    <div class="glass-card p-5 rounded-2xl hover:border-cyan-500 transition cursor-pointer space-y-3" onclick="openGuideDetailPage('safety')">
-                        <span class="bg-rose-500/20 text-rose-300 px-2.5 py-0.5 rounded-md text-[11px] font-bold border border-rose-500/30">안전 구조</span>
-                        <h3 class="text-base font-bold text-white">6. LMC / 블랙아웃 (BO) 구조 절차</h3>
-                        <p class="text-xs text-slate-400 line-clamp-3 leading-relaxed">저산소증 발생 시 버디 인상 구조, BTT(Blow-Tap-Talk) 실전 매뉴얼.</p>
-                        <span class="text-cyan-400 text-xs font-semibold inline-flex items-center gap-1">상세 매뉴얼 보기 <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 가이드 상세 페이지 -->
-            <div id="guideDetailPage" class="hidden glass-card p-6 sm:p-8 rounded-2xl space-y-6 max-w-4xl mx-auto border border-cyan-500/30">
-                <button onclick="hideGuideDetailPage()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition border border-slate-800">
-                    <i class="fa-solid fa-arrow-left"></i> 가이드 목록으로 돌아가기
-                </button>
-                <div class="space-y-2 border-b border-slate-800 pb-4">
-                    <span id="guideTag" class="bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-2.5 py-0.5 rounded-lg text-xs font-bold">분류</span>
-                    <h2 id="guideTitle" class="text-xl sm:text-2xl font-extrabold text-white">가이드 제목</h2>
-                </div>
-                <div id="guideContent" class="text-sm text-slate-200 leading-relaxed space-y-6"></div>
-            </div>
-        </section>
-
-        <!-- 5. 자격증 체계 비교 탭 -->
+        <!-- 4. 자격증 체계 비교 탭 -->
         <section id="tab-license" class="hidden space-y-6">
             <div class="glass-card p-5 rounded-2xl border-l-4 border-cyan-400">
                 <h2 class="text-xl font-bold text-white flex items-center gap-2">
@@ -527,7 +463,7 @@
         const INST_DB = "40722bed9bd38091bc79c69be4101cdd";
         const COMM_DB = "40722bed9bd3806080c3fab88464aa2b";
         const COMMENT_DB = "40722bed9bd38051902ce691cb8301af";
-        const USER_DB = "40722bed9bd3808eabe1fb58cf35a61a"; // 회원 DB ID
+        const USER_DB = "40722bed9bd3808eabe1fb58cf35a61a"; // 본인의 실제 회원 DB ID
 
         let rawCommunityList = [];
         let currentActivePost = null;
@@ -536,66 +472,7 @@
         let isEditingInstructor = false;
         let isEditingPost = false;
         
-        let currentUserProfile = null; // { email, nickname, role, level, pageId }
-
-        const guideDataMap = {
-            vals: {
-                tag: "초급 압력평형",
-                title: "1. 발살바 (Valsalva) 압력평형 호흡법",
-                content: `
-                    <p class="text-slate-300"><strong>발살바 방식</strong>은 코를 손가락으로 밀봉한 상태에서 복근과 가슴 근육에 힘을 주어 폐 내부의 공기를 이관 쪽으로 밀어 올려 중이의 음압을 상쇄하는 기초 기법입니다.</p>
-                    <div class="bg-slate-900/90 p-5 rounded-2xl border border-cyan-500/30 space-y-3">
-                        <h4 class="text-sm font-bold text-cyan-400"><i class="fa-solid fa-diagram-project"></i> 발살바 메커니즘 도해</h4>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-300 pt-2">
-                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center"><span class="text-cyan-400 font-bold block mb-1">Step 1</span>코를 막음</div>
-                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center"><span class="text-cyan-400 font-bold block mb-1">Step 2</span>복근 수축</div>
-                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center"><span class="text-cyan-400 font-bold block mb-1">Step 3</span>공기 압력 전달</div>
-                        </div>
-                    </div>
-                `
-            },
-            frenzel: {
-                tag: "프리다이빙 핵심 스킬 ★",
-                title: "2. 프렌젤 (Frenzel) 3단계 마스터 가이드",
-                content: `
-                    <p class="text-slate-300"><strong>프렌젤 기법</strong>은 폐의 공기를 사용하지 않고 후두개를 닫은 뒤, 혀뿌리와 연구개를 움직여 구강 내 소량 공기만을 압축하여 이관을 개폐하는 필수 테크닉입니다.</p>
-                    <div class="space-y-4">
-                        <div class="bg-slate-900/90 p-5 rounded-2xl border border-slate-800 space-y-2">
-                            <h4 class="text-sm font-bold text-white">1단계: 후두개 닫기 (Epiglottis Lock)</h4>
-                            <p class="text-xs text-slate-300 pl-4">숨을 참은 상태에서 목구멍 뒤쪽 밸브를 잠가 폐 공기 차단.</p>
-                        </div>
-                        <div class="bg-slate-900/90 p-5 rounded-2xl border border-slate-800 space-y-2">
-                            <h4 class="text-sm font-bold text-white">2단계: 연구개 중립 (Soft Palate Neutral)</h4>
-                            <p class="text-xs text-slate-300 pl-4">구강 공기가 코와 이관으로 통하도록 연구개 통로 조절.</p>
-                        </div>
-                        <div class="bg-slate-900/90 p-5 rounded-2xl border border-slate-800 space-y-2">
-                            <h4 class="text-sm font-bold text-white">3단계: 혀 피스톤 (Tongue Piston)</h4>
-                            <p class="text-xs text-slate-300 pl-4">혀 뒷뿌리를 입천장 위쪽으로 밀어 올려 구강 공기 압축.</p>
-                        </div>
-                    </div>
-                `
-            },
-            mouthfill: {
-                tag: "상급 딥 다이빙",
-                title: "3. 마우스필 (Mouthfill) 스킬 적용법",
-                content: `<p class="text-slate-300">수심 15~20m 지점에서 입안 가득 공기를 머물게 한 후 하강하며 턱과 혀를 조절해 수심 30~50m 이상까지 압력평형을 지속하는 상급 기술입니다.</p>`
-            },
-            duckdive: {
-                tag: "입수 자세 도해",
-                title: "4. 덕다이빙 (Duck Dive) 4단계 동작 정석",
-                content: `<p class="text-slate-300">상체를 90도 직각으로 숙이고 양다리를 수직으로 들어 올려 체중의 위치 에너지만으로 무소음 수직 입수를 수행하는 테크닉입니다.</p>`
-            },
-            trouble: {
-                tag: "자가 진단 & 해결",
-                title: "5. 귀가 안 뚫릴 때 원인 진단 및 이관 스트레칭",
-                content: `<p class="text-slate-300">이관 부종, 턱관절 긴장, 시선 불안정 등으로 인해 이퀄라이징이 막힐 때의 맞춤 대처 가이드입니다.</p>`
-            },
-            safety: {
-                tag: "응급 안전 구조",
-                title: "6. LMC & 블랙아웃 (BO) 발생 시 버디 구조 절차 (BTT)",
-                content: `<p class="text-slate-300">수심 출수 직후 저산소증 발생 시 마스크 제거 후 얼굴에 바람을 불고 톡톡 치며 이름을 부르는 BTT 구조 매뉴얼입니다.</p>`
-            }
-        };
+        let currentUserProfile = null;
 
         window.onload = async function() {
             await checkLoginState();
@@ -644,7 +521,6 @@
                 return;
             }
 
-            // 노션 회원 DB에서 해당 이메일 검색
             try {
                 const res = await queryNotion(USER_DB, { property: "이름", title: { equals: email } });
                 if (res.results && res.results.length > 0) {
@@ -668,7 +544,6 @@
                     document.getElementById('myRoleInput').value = currentUserProfile.role;
                     document.getElementById('myLevelInput').value = currentUserProfile.level;
                 } else {
-                    // 회원이 아니면 자동 프로필 생성 유도
                     currentUserProfile = { email: email, pageId: null };
                     document.getElementById('headerMyName').innerText = "프로필 설정 필요";
                     document.getElementById('commentAuthorDisplay').innerText = "프로필 설정 필요";
@@ -1000,7 +875,7 @@
                     title: getText(r.properties["제목"]),
                     category: getText(r.properties["카테고리"]),
                     content: getText(r.properties["내용"]),
-                    authorRaw: getText(r.properties["작성자"]), // 저장된 원본 또는 익명
+                    authorRaw: getText(r.properties["작성자"]),
                     authorEmail: getText(r.properties["작성자이메일"]),
                     createdAt: r.created_time,
                     commentCount: commentCounts[r.id] || 0
@@ -1038,7 +913,6 @@
             filteredList.forEach(c => {
                 const isMyPost = currentUserProfile && currentUserProfile.email && c.authorEmail && currentUserProfile.email === c.authorEmail;
                 
-                // 동적 뱃지 연동 (실명 글일 경우 현재 내 최신 프로필 닉네임/레벨 반영, 익명이면 '익명' 유지)
                 let displayAuthor = c.authorRaw;
                 if (isMyPost && !c.authorRaw.startsWith('익명')) {
                     displayAuthor = currentUserProfile.role === '인증강사' ? `${currentUserProfile.nickname} [강사]` : `${currentUserProfile.nickname} [${currentUserProfile.level}]`;
@@ -1100,7 +974,7 @@
 
             document.getElementById('postTitleInput').value = '';
             document.getElementById('postContentInput').value = '';
-            document.getElementById('postAnonymousCheck').checked = true; // 디폴트 익명 체크
+            document.getElementById('postAnonymousCheck').checked = true;
 
             document.getElementById('communityMainView').classList.add('hidden');
             document.getElementById('communityDetailPage').classList.add('hidden');
@@ -1173,24 +1047,9 @@
             } catch (e) { alert("삭제 실패"); }
         }
 
-        /* 4. 지식 가이드 풀페이지 제어 */
-        function openGuideDetailPage(key) {
-            const data = guideDataMap[key];
-            if (!data) return;
-            document.getElementById('guideMainView').classList.add('hidden');
-            document.getElementById('guideTag').innerText = data.tag;
-            document.getElementById('guideTitle').innerText = data.title;
-            document.getElementById('guideContent').innerHTML = data.content;
-            document.getElementById('guideDetailPage').classList.remove('hidden');
-        }
-        function hideGuideDetailPage() {
-            document.getElementById('guideDetailPage').classList.add('hidden');
-            document.getElementById('guideMainView').classList.remove('hidden');
-        }
-
         /* 탭 전환 */
         function switchTab(t) {
-            ['pools', 'instructors', 'community', 'guide', 'license'].forEach(x => {
+            ['pools', 'instructors', 'community', 'license'].forEach(x => {
                 document.getElementById(`tab-${x}`).classList.add('hidden');
                 const btn = document.getElementById(`nav-${x}`);
                 if (btn) btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-900";
@@ -1203,7 +1062,6 @@
             hideInstructorWritePage();
             hideCommunityDetailPage();
             hideCommunityWritePage();
-            hideGuideDetailPage();
 
             const heroBanner = document.getElementById('mainHeroBanner');
             if (t === 'pools') heroBanner.classList.remove('hidden');
@@ -1261,7 +1119,7 @@
                 });
                 if (res.object === "page") {
                     document.getElementById('commentTextInput').value = '';
-                    document.getElementById('commentAnonymousCheck').checked = true; // 디폴트 복원
+                    document.getElementById('commentAnonymousCheck').checked = true;
                     loadComments(currentActivePost.id);
                     loadCommunity();
                 }
