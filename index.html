@@ -10,7 +10,7 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         body { padding-top: env(safe-area-inset-top); background-color: #0b1120; }
-        .glass-card { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass-card { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .scrollbar-none::-webkit-scrollbar { display: none; }
         .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -21,40 +21,40 @@
     <header class="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-slate-800/80">
         <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
             <div class="flex items-center space-x-2.5 cursor-pointer" onclick="switchTab('pools')">
-                <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-500 to-teal-500 flex items-center justify-center shadow-lg shadow-cyan-500/20">
                     <i class="fa-solid fa-water text-white text-sm"></i>
                 </div>
                 <div>
                     <h1 class="text-base font-black tracking-wider text-white">DIVING HUB</h1>
-                    <p class="text-[9px] text-cyan-400 font-medium tracking-widest uppercase">Freediving & Scuba Portal</p>
+                    <p class="text-[9px] text-teal-400 font-medium tracking-widest uppercase">Freediving & Scuba Portal</p>
                 </div>
             </div>
             
             <div class="flex items-center space-x-2">
-                <button onclick="openProfileModal()" class="bg-slate-800/80 hover:bg-slate-700 text-cyan-400 border border-cyan-500/30 px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow-sm">
-                    <i class="fa-solid fa-user-circle text-cyan-400"></i> <span id="headerMyName">로그인 필요</span>
+                <button onclick="openProfileModal()" class="bg-slate-900 hover:bg-slate-800 text-amber-400 border border-amber-500/30 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-user-circle text-amber-400"></i> <span id="headerMyName">로그인 필요</span>
                 </button>
             </div>
         </div>
 
         <!-- 가로 스크롤 탭 메뉴 -->
         <div class="max-w-7xl mx-auto px-3 border-t border-slate-800/50 overflow-x-auto scrollbar-none flex space-x-2 py-2">
-            <button onclick="switchTab('pools')" id="nav-pools" class="px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20">전국 잠수풀</button>
-            <button onclick="switchTab('instructors')" id="nav-instructors" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-800/50">강사 디렉토리</button>
-            <button onclick="switchTab('community')" id="nav-community" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-800/50">커뮤니티</button>
-            <button onclick="switchTab('guide')" id="nav-guide" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-800/50">지식 & 이퀄라이징</button>
-            <button onclick="switchTab('license')" id="nav-license" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-800/50">자격증 체계 비교</button>
+            <button onclick="switchTab('pools')" id="nav-pools" class="px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition bg-gradient-to-r from-cyan-500 to-teal-500 text-slate-950 shadow-md shadow-cyan-500/20">전국 잠수풀</button>
+            <button onclick="switchTab('instructors')" id="nav-instructors" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-900">강사 디렉토리</button>
+            <button onclick="switchTab('community')" id="nav-community" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-900">커뮤니티</button>
+            <button onclick="switchTab('guide')" id="nav-guide" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-900">지식 & 이퀄라이징</button>
+            <button onclick="switchTab('license')" id="nav-license" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-900">자격증 체계 비교</button>
         </div>
     </header>
 
     <!-- 메인 히어로 배너 (잠수풀 탭에서만 노출) -->
     <div id="mainHeroBanner" class="relative overflow-hidden bg-gradient-to-b from-slate-900 via-slate-950 to-[#0b1120] border-b border-slate-800/60 py-10 px-4 text-center">
         <div class="max-w-3xl mx-auto space-y-3">
-            <span class="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-xs font-bold tracking-wide">
-                국내 유일 프리다이빙 & 스쿠버다이빙 포털
+            <span class="px-3.5 py-1 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 text-xs font-bold tracking-wide">
+                국내 유일 프리다이빙 & 스쿠버다이빙 올인원 포털
             </span>
             <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                세상의 모든 다이빙 정보를<br class="sm:hidden"><span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-blue-500"> 단 한 곳에서 한눈에</span>
+                세상의 모든 다이빙 정보를<br class="sm:hidden"><span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-amber-300"> 단 한 곳에서 한눈에</span>
             </h2>
             <p class="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-xl mx-auto">
                 전국 주요 잠수풀 예약 정보부터 대표 강사진 디렉토리, 실전 기술 매뉴얼, 커뮤니티까지 집약했습니다.
@@ -65,7 +65,7 @@
     <!-- 메인 컨텐츠 영역 -->
     <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full space-y-8">
 
-        <!-- 1. 전국 잠수풀 탭 (클릭 시 외부 예약 링크로 바로 직행) -->
+        <!-- 1. 전국 잠수풀 탭 -->
         <section id="tab-pools" class="space-y-6">
             <div class="flex items-center justify-between">
                 <div>
@@ -85,14 +85,14 @@
         <!-- 2. 강사 디렉토리 탭 -->
         <section id="tab-instructors" class="hidden space-y-6">
             <div id="instructorsMainView" class="space-y-6">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 glass-card p-5 rounded-2xl">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 glass-card p-5 rounded-2xl border-l-4 border-cyan-400">
                     <div>
                         <h2 class="text-xl font-bold text-white flex items-center gap-2">
                             <i class="fa-solid fa-chalkboard-user text-cyan-400"></i> 전문 강사 디렉토리
                         </h2>
                         <p class="text-xs text-slate-400 mt-1">인증된 강사진의 프로필과 강습 정보를 확인하세요.</p>
                     </div>
-                    <button onclick="showInstructorWritePage()" class="w-full sm:w-auto bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20">
+                    <button onclick="showInstructorWritePage()" class="w-full sm:w-auto bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-400 hover:to-teal-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20">
                         <i class="fa-solid fa-user-plus"></i> 강사 프로필 등록
                     </button>
                 </div>
@@ -106,31 +106,31 @@
             <!-- 강사 상세 프로필 페이지 -->
             <div id="instructorDetailPage" class="hidden glass-card p-6 sm:p-8 rounded-2xl space-y-6 max-w-4xl mx-auto border border-cyan-500/30">
                 <div class="flex items-center justify-between">
-                    <button onclick="hideInstructorDetailPage()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition">
+                    <button onclick="hideInstructorDetailPage()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition border border-slate-800">
                         <i class="fa-solid fa-arrow-left"></i> 목록으로 돌아가기
                     </button>
                     <div id="instructorOwnerButtons" class="hidden flex gap-2">
-                        <button onclick="startEditInstructor()" class="bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 border border-cyan-500/30 px-3 py-1.5 rounded-xl text-xs font-bold transition">수정</button>
+                        <button onclick="startEditInstructor()" class="bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-500/30 px-3 py-1.5 rounded-xl text-xs font-bold transition">수정</button>
                         <button onclick="deleteCurrentInstructor()" class="bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-xl text-xs font-bold transition">삭제</button>
                     </div>
                 </div>
                 <div class="space-y-3 border-b border-slate-800 pb-5">
                     <div class="flex items-center gap-2">
-                        <span id="instCertTag" class="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-3 py-1 rounded-lg text-xs font-bold">소속 단체</span>
+                        <span id="instCertTag" class="bg-teal-500/20 text-teal-300 border border-teal-500/30 px-3 py-1 rounded-lg text-xs font-bold">소속 단체</span>
                         <span id="instRegionText" class="text-xs text-slate-400 font-medium"><i class="fa-solid fa-location-dot text-cyan-400"></i> 활동 지역</span>
                     </div>
                     <h2 id="instNameTitle" class="text-2xl sm:text-3xl font-black text-white">강사 성함</h2>
                 </div>
                 <div class="space-y-3">
                     <h3 class="text-xs font-bold text-cyan-400 uppercase tracking-wider">강습 커리큘럼 및 상세 가이드</h3>
-                    <div id="instIntroBody" class="text-sm text-slate-200 leading-relaxed whitespace-pre-wrap bg-slate-900/80 p-5 rounded-xl border border-slate-800 min-h-[140px]">소개 내용</div>
+                    <div id="instIntroBody" class="text-sm text-slate-200 leading-relaxed whitespace-pre-wrap bg-slate-900/90 p-5 rounded-xl border border-slate-800 min-h-[140px]">소개 내용</div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-1">
+                    <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-1">
                         <span class="text-[11px] text-slate-400 block font-medium">직통 연락처</span>
                         <span id="instContactText" class="text-sm font-bold text-white block">-</span>
                     </div>
-                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-1">
+                    <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-1">
                         <span class="text-[11px] text-slate-400 block font-medium">오픈채팅 / SNS 링크</span>
                         <a id="instChatBtn" href="#" target="_blank" class="text-sm font-bold text-cyan-400 underline block truncate">오픈채팅 문의하기 바로가기</a>
                     </div>
@@ -175,31 +175,31 @@
                         </div>
                     </div>
                     <div class="flex gap-3 pt-2">
-                        <button onclick="hideInstructorWritePage()" class="w-1/3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-xl transition text-xs">취소</button>
-                        <button id="instructorSubmitBtn" onclick="submitInstructor()" class="w-2/3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3 rounded-xl transition text-xs shadow-lg shadow-cyan-500/20">강사 DB 등록하기</button>
+                        <button onclick="hideInstructorWritePage()" class="w-1/3 bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold py-3 rounded-xl transition text-xs border border-slate-800">취소</button>
+                        <button id="instructorSubmitBtn" onclick="submitInstructor()" class="w-2/3 bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-400 hover:to-teal-400 text-slate-950 font-bold py-3 rounded-xl transition text-xs shadow-lg shadow-cyan-500/20">강사 DB 등록하기</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 3. 커뮤니티 탭 (카테고리별 필터 탭 적용) -->
+        <!-- 3. 커뮤니티 탭 -->
         <section id="tab-community" class="hidden space-y-6">
             <div id="communityMainView" class="space-y-6">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 glass-card p-5 rounded-2xl">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 glass-card p-5 rounded-2xl border-l-4 border-teal-400">
                     <div>
                         <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                            <i class="fa-solid fa-comments text-cyan-400"></i> 다이버 커뮤니티
+                            <i class="fa-solid fa-comments text-teal-400"></i> 다이버 커뮤니티
                         </h2>
                         <p class="text-xs text-slate-400 mt-1">버디 모집, 장비 거래, 자유로운 수중 이야기</p>
                     </div>
-                    <button onclick="showCommunityWritePage()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 shadow-md shadow-cyan-500/20">
+                    <button onclick="showCommunityWritePage()" class="bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-400 hover:to-teal-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 shadow-md shadow-cyan-500/20">
                         <i class="fa-solid fa-pen"></i> 글작성
                     </button>
                 </div>
 
                 <!-- 카테고리 필터 탭 -->
                 <div class="flex gap-2 overflow-x-auto scrollbar-none pb-1" id="communityFilterTabs">
-                    <button onclick="filterCommunityCategory('전체')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-500 text-slate-950 whitespace-nowrap transition">전체 보기</button>
+                    <button onclick="filterCommunityCategory('전체')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-teal-500 text-slate-950 whitespace-nowrap transition shadow-sm">전체 보기</button>
                     <button onclick="filterCommunityCategory('자유')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap transition hover:text-white">자유 수다</button>
                     <button onclick="filterCommunityCategory('버디모집')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap transition hover:text-white">버디 모집</button>
                     <button onclick="filterCommunityCategory('장터')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap transition hover:text-white">중고 장터</button>
@@ -216,17 +216,17 @@
             <!-- 커뮤니티 상세 페이지 -->
             <div id="communityDetailPage" class="hidden glass-card p-6 sm:p-8 rounded-2xl space-y-6 max-w-4xl mx-auto border border-cyan-500/30">
                 <div class="flex items-center justify-between">
-                    <button onclick="hideCommunityDetailPage()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition">
+                    <button onclick="hideCommunityDetailPage()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition border border-slate-800">
                         <i class="fa-solid fa-arrow-left"></i> 목록으로 돌아가기
                     </button>
                     <div id="communityOwnerButtons" class="hidden flex gap-2">
-                        <button onclick="startEditPost()" class="bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 border border-cyan-500/30 px-3 py-1.5 rounded-xl text-xs font-bold transition">수정</button>
+                        <button onclick="startEditPost()" class="bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-500/30 px-3 py-1.5 rounded-xl text-xs font-bold transition">수정</button>
                         <button onclick="deleteCurrentPost()" class="bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-xl text-xs font-bold transition">삭제</button>
                     </div>
                 </div>
                 <div class="space-y-3 border-b border-slate-800 pb-5">
                     <div class="flex items-center gap-2">
-                        <span id="detailCategory" class="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-2.5 py-0.5 rounded-lg text-xs font-bold">카테고리</span>
+                        <span id="detailCategory" class="bg-teal-500/20 text-teal-300 border border-teal-500/30 px-2.5 py-0.5 rounded-lg text-xs font-bold">카테고리</span>
                         <span id="detailAuthor" class="text-xs text-slate-300 font-medium">작성자</span>
                         <span id="detailDate" class="text-xs text-slate-500 ml-auto">날짜</span>
                     </div>
@@ -236,13 +236,13 @@
                 
                 <!-- 댓글 섹션 -->
                 <div class="border-t border-slate-800 pt-6 space-y-5">
-                    <h3 class="text-sm font-bold text-cyan-400 flex items-center gap-2">
+                    <h3 class="text-sm font-bold text-teal-400 flex items-center gap-2">
                         <i class="fa-solid fa-comments"></i> 댓글 <span id="detailCommentCount" class="text-white">0</span>
                     </h3>
                     <div id="commentsList" class="space-y-3"></div>
                     <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-3">
                         <div class="flex justify-between items-center text-xs text-slate-400">
-                            <span>댓글 작성자: <strong id="commentAuthorDisplay" class="text-cyan-400">로그인 필요</strong></span>
+                            <span>댓글 작성자: <strong id="commentAuthorDisplay" class="text-amber-400">로그인 필요</strong></span>
                         </div>
                         <textarea id="commentTextInput" rows="3" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-cyan-500" placeholder="댓글을 남겨보세요..."></textarea>
                         <div class="flex justify-end">
@@ -279,8 +279,8 @@
                         <textarea id="postContentInput" rows="12" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3.5 text-white text-sm focus:border-cyan-500 focus:outline-none leading-relaxed" placeholder="내용을 작성해주세요."></textarea>
                     </div>
                     <div class="flex gap-3 pt-2">
-                        <button onclick="hideCommunityWritePage()" class="w-1/3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-xl transition text-xs">취소</button>
-                        <button id="communitySubmitBtn" onclick="submitPost()" class="w-2/3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3 rounded-xl transition text-xs shadow-lg shadow-cyan-500/20">게시글 등록하기</button>
+                        <button onclick="hideCommunityWritePage()" class="w-1/3 bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold py-3 rounded-xl transition text-xs border border-slate-800">취소</button>
+                        <button id="communitySubmitBtn" onclick="submitPost()" class="w-2/3 bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-400 hover:to-teal-400 text-slate-950 font-bold py-3 rounded-xl transition text-xs shadow-lg shadow-cyan-500/20">게시글 등록하기</button>
                     </div>
                 </div>
             </div>
@@ -289,46 +289,46 @@
         <!-- 4. 다이빙 지식 & 이퀄라이징 탭 -->
         <section id="tab-guide" class="hidden space-y-6">
             <div id="guideMainView" class="space-y-6">
-                <div class="glass-card p-5 rounded-2xl border-l-4 border-cyan-400">
+                <div class="glass-card p-5 rounded-2xl border-l-4 border-amber-400">
                     <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-book-open text-cyan-400"></i> 수중 다이빙 지식 & 실전 매뉴얼
+                        <i class="fa-solid fa-book-open text-amber-400"></i> 수중 다이빙 지식 & 실전 매뉴얼
                     </h2>
                     <p class="text-xs text-slate-400 mt-1">카드를 클릭하시면 상세 동작 절차와 도해 매뉴얼이 풀페이지로 전환됩니다.</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                     <div class="glass-card p-5 rounded-2xl hover:border-cyan-500 transition cursor-pointer space-y-3" onclick="openGuideDetailPage('vals')">
-                        <span class="bg-cyan-500/20 text-cyan-400 px-2.5 py-0.5 rounded-md text-[11px] font-bold">압력평형</span>
+                        <span class="bg-cyan-500/20 text-cyan-300 px-2.5 py-0.5 rounded-md text-[11px] font-bold border border-cyan-500/30">압력평형</span>
                         <h3 class="text-base font-bold text-white">1. 발살바 (Valsalva) 호흡법</h3>
                         <p class="text-xs text-slate-400 line-clamp-3 leading-relaxed">복근과 폐의 공기로 이관을 여는 초급 기술. 적용법과 한계점 분석.</p>
                         <span class="text-cyan-400 text-xs font-semibold inline-flex items-center gap-1">상세 매뉴얼 보기 <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
                     </div>
                     <div class="glass-card p-5 rounded-2xl hover:border-cyan-500 transition cursor-pointer space-y-3" onclick="openGuideDetailPage('frenzel')">
-                        <span class="bg-cyan-500/20 text-cyan-400 px-2.5 py-0.5 rounded-md text-[11px] font-bold">핵심 기술 ★</span>
+                        <span class="bg-teal-500/20 text-teal-300 px-2.5 py-0.5 rounded-md text-[11px] font-bold border border-teal-500/30">핵심 기술 ★</span>
                         <h3 class="text-base font-bold text-white">2. 프렌젤 (Frenzel) 3단계 완성</h3>
                         <p class="text-xs text-slate-400 line-clamp-3 leading-relaxed">후두개 닫기, 연구개 중립, 혀 피스톤 밀어 올리기 단계별 실전 훈련법.</p>
                         <span class="text-cyan-400 text-xs font-semibold inline-flex items-center gap-1">상세 매뉴얼 보기 <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
                     </div>
                     <div class="glass-card p-5 rounded-2xl hover:border-cyan-500 transition cursor-pointer space-y-3" onclick="openGuideDetailPage('mouthfill')">
-                        <span class="bg-cyan-500/20 text-cyan-400 px-2.5 py-0.5 rounded-md text-[11px] font-bold">딥 다이빙</span>
+                        <span class="bg-cyan-500/20 text-cyan-300 px-2.5 py-0.5 rounded-md text-[11px] font-bold border border-cyan-500/30">딥 다이빙</span>
                         <h3 class="text-base font-bold text-white">3. 마우스필 (Mouthfill) 스킬</h3>
                         <p class="text-xs text-slate-400 line-clamp-3 leading-relaxed">30m 이상 딥다이빙 시 잔류용적 이하 수심 압력평형 가이드.</p>
                         <span class="text-cyan-400 text-xs font-semibold inline-flex items-center gap-1">상세 매뉴얼 보기 <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
                     </div>
                     <div class="glass-card p-5 rounded-2xl hover:border-cyan-500 transition cursor-pointer space-y-3" onclick="openGuideDetailPage('duckdive')">
-                        <span class="bg-cyan-500/20 text-cyan-400 px-2.5 py-0.5 rounded-md text-[11px] font-bold">입수 테크닉</span>
+                        <span class="bg-teal-500/20 text-teal-300 px-2.5 py-0.5 rounded-md text-[11px] font-bold border border-teal-500/30">입수 테크닉</span>
                         <h3 class="text-base font-bold text-white">4. 덕다이빙 (Duck Dive) 정석</h3>
                         <p class="text-xs text-slate-400 line-clamp-3 leading-relaxed">체중 이동과 킥 타이밍을 활용한 무소음 수직 입수 4단계 도해.</p>
                         <span class="text-cyan-400 text-xs font-semibold inline-flex items-center gap-1">상세 매뉴얼 보기 <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
                     </div>
                     <div class="glass-card p-5 rounded-2xl hover:border-cyan-500 transition cursor-pointer space-y-3" onclick="openGuideDetailPage('trouble')">
-                        <span class="bg-rose-500/20 text-rose-400 px-2.5 py-0.5 rounded-md text-[11px] font-bold">자가 진단</span>
+                        <span class="bg-amber-500/20 text-amber-300 px-2.5 py-0.5 rounded-md text-[11px] font-bold border border-amber-500/30">자가 진단</span>
                         <h3 class="text-base font-bold text-white">5. 귀가 안 뚫릴 때 원인 및 스트레칭</h3>
                         <p class="text-xs text-slate-400 line-clamp-3 leading-relaxed">이관 부종, 턱 관절 긴장, 연구개 조절 미숙 진단 및 예방 루틴.</p>
                         <span class="text-cyan-400 text-xs font-semibold inline-flex items-center gap-1">상세 매뉴얼 보기 <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
                     </div>
                     <div class="glass-card p-5 rounded-2xl hover:border-cyan-500 transition cursor-pointer space-y-3" onclick="openGuideDetailPage('safety')">
-                        <span class="bg-rose-500/20 text-rose-400 px-2.5 py-0.5 rounded-md text-[11px] font-bold">안전 구조</span>
+                        <span class="bg-rose-500/20 text-rose-300 px-2.5 py-0.5 rounded-md text-[11px] font-bold border border-rose-500/30">안전 구조</span>
                         <h3 class="text-base font-bold text-white">6. LMC / 블랙아웃 (BO) 구조 절차</h3>
                         <p class="text-xs text-slate-400 line-clamp-3 leading-relaxed">저산소증 발생 시 버디 인상 구조, BTT(Blow-Tap-Talk) 실전 매뉴얼.</p>
                         <span class="text-cyan-400 text-xs font-semibold inline-flex items-center gap-1">상세 매뉴얼 보기 <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
@@ -338,11 +338,11 @@
 
             <!-- 가이드 상세 페이지 -->
             <div id="guideDetailPage" class="hidden glass-card p-6 sm:p-8 rounded-2xl space-y-6 max-w-4xl mx-auto border border-cyan-500/30">
-                <button onclick="hideGuideDetailPage()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition">
+                <button onclick="hideGuideDetailPage()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition border border-slate-800">
                     <i class="fa-solid fa-arrow-left"></i> 가이드 목록으로 돌아가기
                 </button>
                 <div class="space-y-2 border-b border-slate-800 pb-4">
-                    <span id="guideTag" class="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-2.5 py-0.5 rounded-lg text-xs font-bold">분류</span>
+                    <span id="guideTag" class="bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-2.5 py-0.5 rounded-lg text-xs font-bold">분류</span>
                     <h2 id="guideTitle" class="text-xl sm:text-2xl font-extrabold text-white">가이드 제목</h2>
                 </div>
                 <div id="guideContent" class="text-sm text-slate-200 leading-relaxed space-y-6"></div>
@@ -361,7 +361,7 @@
             <div class="space-y-6">
                 <!-- 프리다이빙 비교표 -->
                 <div class="glass-card rounded-2xl overflow-hidden p-5 space-y-4">
-                    <h3 class="text-base font-bold text-cyan-400 flex items-center gap-2">
+                    <h3 class="text-base font-bold text-teal-400 flex items-center gap-2">
                         <i class="fa-solid fa-water"></i> 프리다이빙 (Freediving) 레벨 비교
                     </h3>
                     <div class="overflow-x-auto">
@@ -411,7 +411,7 @@
 
                 <!-- 스쿠버다이빙 비교표 -->
                 <div class="glass-card rounded-2xl overflow-hidden p-5 space-y-4">
-                    <h3 class="text-base font-bold text-cyan-400 flex items-center gap-2">
+                    <h3 class="text-base font-bold text-teal-400 flex items-center gap-2">
                         <i class="fa-solid fa-mask-snorkel"></i> 스쿠버다이빙 (Scuba Diving) 레벨 비교
                     </h3>
                     <div class="overflow-x-auto">
@@ -459,7 +459,7 @@
     <div id="profileModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="glass-card w-full max-w-md rounded-2xl p-6 space-y-5 relative border border-slate-700">
             <button onclick="closeProfileModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-user-gear text-cyan-400"></i> 회원 프로필 설정</h3>
+            <h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-user-gear text-amber-400"></i> 회원 프로필 설정</h3>
             
             <div id="googleLoginSection" class="space-y-3 text-center py-2">
                 <p class="text-xs text-slate-300">구글 계정으로 로그인하여 본인 인증을 완료하세요.</p>
@@ -472,30 +472,30 @@
             </div>
 
             <div id="profileEditSection" class="space-y-4 hidden text-xs">
-                <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
+                <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800 flex items-center justify-between">
                     <div>
                         <span class="text-slate-400 block text-[10px]">연동된 구글 계정</span>
-                        <strong id="userEmailDisplay" class="text-cyan-400 text-xs">email@gmail.com</strong>
+                        <strong id="userEmailDisplay" class="text-amber-400 text-xs">email@gmail.com</strong>
                     </div>
-                    <button onclick="logoutGoogle()" class="text-rose-400 hover:underline text-[11px]">로그아웃</button>
+                    <button onclick="logoutGoogle()" class="text-rose-400 hover:underline text-[11px] font-medium">로그아웃</button>
                 </div>
 
                 <div>
                     <label class="block text-slate-400 mb-1.5 font-medium">사용할 닉네임</label>
-                    <input type="text" id="myNicknameInput" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white" placeholder="닉네임 입력">
+                    <input type="text" id="myNicknameInput" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:border-amber-400 focus:outline-none" placeholder="닉네임 입력">
                 </div>
                 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-slate-400 mb-1.5 font-medium">회원 유형</label>
-                        <select id="myRoleInput" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-white">
+                        <select id="myRoleInput" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-white focus:border-amber-400 focus:outline-none">
                             <option value="일반다이버">일반 다이버</option>
                             <option value="인증강사">인증 강사</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-slate-400 mb-1.5 font-medium">자격증 레벨</label>
-                        <select id="myLevelInput" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-white">
+                        <select id="myLevelInput" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-white focus:border-amber-400 focus:outline-none">
                             <option value="체험/입문">체험 / 입문</option>
                             <option value="Level 1">Level 1</option>
                             <option value="Level 2">Level 2</option>
@@ -505,7 +505,7 @@
                     </div>
                 </div>
 
-                <button onclick="saveMyProfile()" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3 rounded-xl text-xs transition shadow-lg shadow-cyan-500/20">프로필 정보 저장</button>
+                <button onclick="saveMyProfile()" class="w-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-bold py-3 rounded-xl text-xs transition shadow-lg shadow-amber-500/20">프로필 정보 저장</button>
             </div>
         </div>
     </div>
@@ -770,7 +770,7 @@
                     g.innerHTML += `
                         <a href="${cleanLink}" target="_blank" class="glass-card p-5 rounded-2xl space-y-3 cursor-pointer hover:border-cyan-500 transition shadow-lg block text-left">
                             <div class="flex justify-between items-center">
-                                <span class="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-2.5 py-0.5 rounded-lg text-[10px] font-bold">${p.region}</span>
+                                <span class="bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-2.5 py-0.5 rounded-lg text-[10px] font-bold">${p.region}</span>
                                 <span class="text-xs text-slate-400"><i class="fa-solid fa-water text-cyan-400"></i> 수심: ${p.depth}</span>
                             </div>
                             <h3 class="text-base font-bold text-white flex items-center justify-between">
@@ -784,7 +784,7 @@
             } catch (e) { console.error(e); }
         }
 
-        /* 2. 강사 디렉토리 (본인글 수정/삭제 및 [내 글] 태그 지원) */
+        /* 2. 강사 디렉토리 */
         async function loadInstructors() {
             try {
                 const data = await queryNotion(INST_DB);
@@ -808,13 +808,15 @@
                 list.forEach(i => {
                     const isMyPost = myInfo.email && i.authorEmail && myInfo.email === i.authorEmail;
                     g.innerHTML += `
-                        <div onclick='showInstructorDetailPage(${JSON.stringify(i)})' class="glass-card p-5 rounded-2xl space-y-3 cursor-pointer hover:border-cyan-500 transition shadow-lg relative">
-                            ${isMyPost ? '<span class="absolute top-4 right-4 bg-cyan-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded-md">내 프로필</span>' : ''}
+                        <div onclick='showInstructorDetailPage(${JSON.stringify(i)})' class="glass-card p-5 rounded-2xl space-y-3 cursor-pointer hover:border-cyan-500 transition shadow-lg flex flex-col justify-between">
                             <div class="flex justify-between items-center">
-                                <span class="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-2.5 py-0.5 rounded-lg text-[10px] font-bold">${i.region}</span>
-                                <span class="text-xs text-slate-400 font-semibold">${i.cert}</span>
+                                <span class="bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-2.5 py-0.5 rounded-lg text-[10px] font-bold">${i.region}</span>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-xs text-slate-400 font-semibold">${i.cert}</span>
+                                    ${isMyPost ? '<span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold text-[10px] px-2 py-0.5 rounded-md">내 프로필</span>' : ''}
+                                </div>
                             </div>
-                            <h3 class="text-base font-bold text-white">${i.name} 강사</h3>
+                            <h3 class="text-base font-bold text-white pt-1">${i.name} 강사</h3>
                             <p class="text-xs text-slate-300 line-clamp-2 leading-relaxed">${i.intro}</p>
                             <span class="text-cyan-400 text-xs font-semibold inline-flex items-center gap-1 pt-1">상세 프로필 보기 <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
                         </div>
@@ -941,7 +943,7 @@
             } catch (e) { alert("삭제 실패"); }
         }
 
-        /* 3. 커뮤니티 (본인글 수정/삭제 및 [내 글] 태그 지원) */
+        /* 3. 커뮤니티 */
         async function loadCommunity() {
             try {
                 const data = await queryNotion(COMM_DB);
@@ -975,7 +977,7 @@
             const buttons = document.querySelectorAll('#communityFilterTabs button');
             buttons.forEach(b => {
                 if (b.innerText.includes(cat) || (cat === '전체' && b.innerText.includes('전체'))) {
-                    b.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-500 text-slate-950 whitespace-nowrap transition";
+                    b.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-teal-500 text-slate-950 whitespace-nowrap transition shadow-sm";
                 } else {
                     b.className = "px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap transition hover:text-white";
                 }
@@ -997,16 +999,18 @@
             filteredList.forEach(c => {
                 const isMyPost = myInfo.email && c.authorEmail && myInfo.email === c.authorEmail;
                 l.innerHTML += `
-                    <div onclick='showCommunityDetailPage(${JSON.stringify(c)})' class="glass-card p-4 sm:p-5 rounded-2xl space-y-2 cursor-pointer hover:border-cyan-500 transition relative">
-                        ${isMyPost ? '<span class="absolute top-4 right-4 bg-cyan-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded-md">내 글</span>' : ''}
+                    <div onclick='showCommunityDetailPage(${JSON.stringify(c)})' class="glass-card p-4 sm:p-5 rounded-2xl space-y-2 cursor-pointer hover:border-cyan-500 transition">
                         <div class="flex justify-between items-center text-xs">
                             <div class="flex items-center gap-2">
-                                <span class="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-2 py-0.5 rounded-md font-bold">${c.category}</span>
+                                <span class="bg-teal-500/20 text-teal-300 border border-teal-500/30 px-2 py-0.5 rounded-md font-bold">${c.category}</span>
                                 <span class="text-slate-300 font-medium">${c.author}</span>
                             </div>
-                            <span class="text-cyan-400 bg-slate-900 px-2.5 py-0.5 rounded-md font-bold text-[11px]"><i class="fa-solid fa-comment"></i> ${c.commentCount}</span>
+                            <div class="flex items-center gap-2">
+                                ${isMyPost ? '<span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold text-[10px] px-2 py-0.5 rounded-md">내 글</span>' : ''}
+                                <span class="text-cyan-400 bg-slate-900 px-2.5 py-0.5 rounded-md font-bold text-[11px]"><i class="fa-solid fa-comment"></i> ${c.commentCount}</span>
+                            </div>
                         </div>
-                        <h3 class="text-sm sm:text-base font-bold text-white">${c.title}</h3>
+                        <h3 class="text-sm sm:text-base font-bold text-white pt-1">${c.title}</h3>
                         <p class="text-xs text-slate-300 line-clamp-2 leading-relaxed">${c.content}</p>
                     </div>
                 `;
@@ -1143,11 +1147,11 @@
             ['pools', 'instructors', 'community', 'guide', 'license'].forEach(x => {
                 document.getElementById(`tab-${x}`).classList.add('hidden');
                 const btn = document.getElementById(`nav-${x}`);
-                if (btn) btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-800/50";
+                if (btn) btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition text-slate-400 hover:text-white hover:bg-slate-900";
             });
             document.getElementById(`tab-${t}`).classList.remove('hidden');
             const activeBtn = document.getElementById(`nav-${t}`);
-            if (activeBtn) activeBtn.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20";
+            if (activeBtn) activeBtn.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition bg-gradient-to-r from-cyan-500 to-teal-500 text-slate-950 shadow-md shadow-cyan-500/20";
 
             hideInstructorDetailPage();
             hideInstructorWritePage();
@@ -1174,9 +1178,9 @@
                 listEl.innerHTML = comments.length ? '' : '<p class="text-slate-500 text-xs py-2">등록된 댓글이 없습니다.</p>';
                 comments.forEach(cm => {
                     listEl.innerHTML += `
-                        <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800 space-y-1">
+                        <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800 space-y-1">
                             <div class="flex justify-between text-xs">
-                                <span class="font-bold text-cyan-400">${cm.author}</span>
+                                <span class="font-bold text-amber-400">${cm.author}</span>
                                 <span class="text-slate-500 text-[11px]">${formatDate(cm.createdAt)}</span>
                             </div>
                             <p class="text-slate-200 text-xs leading-relaxed">${cm.text}</p>
